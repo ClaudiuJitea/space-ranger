@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://i5j6k7l8m9n0"]
+
+[ext_resource type="Script" path="res://src/environment/hazard_laser.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/models/hazard_pylon.glb" id="2_pylon"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(0.3, 3, 0.3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
+shading_mode = 0
+albedo_color = Color(1, 0.08, 0.12, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_1"]
+material = SubResource("StandardMaterial3D_1")
+top_radius = 0.08
+bottom_radius = 0.08
+height = 3.0
+
+[node name="HazardLaser" type="Area3D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("BoxShape3D_1")
+
+[node name="PylonBottom" parent="." instance=ExtResource("2_pylon")]
+
+[node name="PylonTop" parent="." instance=ExtResource("2_pylon")]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 3, 0)
+
+[node name="BeamMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("CylinderMesh_1")
+
+[node name="BeamLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+light_color = Color(1, 0.05, 0.1, 1)
+light_energy = 4.0
+omni_range = 3.5

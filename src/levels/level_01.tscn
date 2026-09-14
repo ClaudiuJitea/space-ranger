@@ -1,0 +1,229 @@
+[gd_scene format=3 uid="uid://m9n0o1p2q3r4"]
+
+[ext_resource type="Script" path="res://src/levels/level_01.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://src/entities/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://src/ui/hud.tscn" id="3_hud"]
+[ext_resource type="Script" path="res://src/environment/camera_controller.gd" id="4_cam"]
+[ext_resource type="Script" path="res://src/environment/space_backdrop.gd" id="5_space"]
+[ext_resource type="PackedScene" path="res://src/environment/platform.tscn" id="6_plat"]
+[ext_resource type="PackedScene" path="res://assets/models/platform_pillar.glb" id="7_pillar"]
+[ext_resource type="PackedScene" path="res://src/environment/hazard_laser.tscn" id="8_hazard"]
+[ext_resource type="PackedScene" path="res://src/entities/pickups/pickup.tscn" id="9_pickup"]
+[ext_resource type="PackedScene" path="res://src/environment/prop_terminal.tscn" id="10_term"]
+[ext_resource type="PackedScene" path="res://src/environment/prop_crate.tscn" id="11_crate"]
+[ext_resource type="PackedScene" path="res://src/entities/enemies/drone.tscn" id="12_drone"]
+[ext_resource type="PackedScene" path="res://src/entities/enemies/gunship.tscn" id="13_gunship"]
+[ext_resource type="PackedScene" path="res://src/entities/enemies/turret.tscn" id="14_turret"]
+[ext_resource type="PackedScene" path="res://src/entities/enemies/boss.tscn" id="15_boss"]
+[ext_resource type="PackedScene" path="res://src/ui/pause_menu.tscn" id="16_pause"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
+sky_top_color = Color(0.02, 0.04, 0.08, 1)
+sky_horizon_color = Color(0.04, 0.08, 0.16, 1)
+ground_bottom_color = Color(0.01, 0.02, 0.04, 1)
+ground_horizon_color = Color(0.03, 0.06, 0.12, 1)
+
+[sub_resource type="Sky" id="Sky_1"]
+sky_material = SubResource("ProceduralSkyMaterial_1")
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 2
+sky = SubResource("Sky_1")
+ambient_light_source = 2
+ambient_light_color = Color(0.12, 0.18, 0.28, 1)
+ambient_light_energy = 1.0
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.8
+glow_bloom = 0.25
+glow_blend_mode = 0
+
+[node name="Level01" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 10, 20, 15)
+light_color = Color(0.85, 0.92, 1, 1)
+light_energy = 1.4
+shadow_enabled = true
+
+[node name="SpaceBackdrop" type="Node3D" parent="."]
+script = ExtResource("5_space")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 14)
+current = true
+fov = 60.0
+script = ExtResource("4_cam")
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("16_pause")]
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+
+[node name="BackgroundDecor" type="Node3D" parent="."]
+
+[node name="Pillar1" parent="BackgroundDecor" instance=ExtResource("7_pillar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 3, -4)
+
+[node name="Pillar2" parent="BackgroundDecor" instance=ExtResource("7_pillar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 5, -4)
+
+[node name="Pillar3" parent="BackgroundDecor" instance=ExtResource("7_pillar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, 4, -4)
+
+[node name="Pillar4" parent="BackgroundDecor" instance=ExtResource("7_pillar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 68, 6, -4)
+
+[node name="Pillar5" parent="BackgroundDecor" instance=ExtResource("7_pillar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 92, 7, -4)
+
+[node name="Platforms" type="Node3D" parent="."]
+
+[node name="Start_0" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+
+[node name="Start_1" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+
+[node name="Start_2" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
+
+[node name="Start_3" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
+
+[node name="Elevated_1" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 2.2, 0)
+
+[node name="Elevated_2" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 4.0, 0)
+
+[node name="Floor_2" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0, 0)
+
+[node name="Floor_3" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 0, 0)
+
+[node name="Floor_4" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 0, 0)
+
+[node name="High_1" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 3.5, 0)
+
+[node name="High_2" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 5.5, 0)
+
+[node name="High_3" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54, 3.8, 0)
+
+[node name="PreBoss_1" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62, 1.5, 0)
+
+[node name="PreBoss_2" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 66, 1.5, 0)
+
+[node name="PreBoss_3" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70, 1.5, 0)
+
+[node name="BossArena_Floor1" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 0, 0)
+
+[node name="BossArena_Floor2" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 82, 0, 0)
+
+[node name="BossArena_Floor3" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 86, 0, 0)
+
+[node name="BossArena_Floor4" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 90, 0, 0)
+
+[node name="BossArena_Floor5" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 94, 0, 0)
+
+[node name="BossArena_HighL" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 4.0, 0)
+
+[node name="BossArena_HighR" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 94, 4.0, 0)
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="PropTerminal1" parent="Props" instance=ExtResource("10_term")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+
+[node name="PropCrate1" parent="Props" instance=ExtResource("11_crate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
+
+[node name="PropCrate2" parent="Props" instance=ExtResource("11_crate")]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, 5.8, 0, 0)
+
+[node name="PropTerminal2" parent="Props" instance=ExtResource("10_term")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 68, 1.5, 0)
+
+[node name="Hazards" type="Node3D" parent="."]
+
+[node name="HazardLaser1" parent="Hazards" instance=ExtResource("8_hazard")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 0)
+is_pulsing = true
+pulse_on_time = 2.2
+pulse_off_time = 1.6
+
+[node name="HazardLaser2" parent="Hazards" instance=ExtResource("8_hazard")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 0, 0)
+is_pulsing = true
+pulse_on_time = 1.8
+pulse_off_time = 1.8
+
+[node name="Pickups" type="Node3D" parent="."]
+
+[node name="EnergyPickup1" parent="Pickups" instance=ExtResource("9_pickup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 1.2, 0)
+
+[node name="WeaponScatterPickup" parent="Pickups" instance=ExtResource("9_pickup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 5.2, 0)
+pickup_type = 2
+weapon_to_unlock = 1
+
+[node name="ShieldPickup1" parent="Pickups" instance=ExtResource("9_pickup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 1.2, 0)
+pickup_type = 1
+
+[node name="WeaponRailgunPickup" parent="Pickups" instance=ExtResource("9_pickup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 6.7, 0)
+pickup_type = 2
+weapon_to_unlock = 2
+
+[node name="EnergyPickup2" parent="Pickups" instance=ExtResource("9_pickup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54, 5.0, 0)
+
+[node name="ShieldPickup2" parent="Pickups" instance=ExtResource("9_pickup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70, 2.7, 0)
+pickup_type = 1
+
+[node name="Enemies" type="Node3D" parent="."]
+
+[node name="Drone1" parent="Enemies" instance=ExtResource("12_drone")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 3.5, 0)
+
+[node name="Drone2" parent="Enemies" instance=ExtResource("12_drone")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 5.0, 0)
+
+[node name="Turret1" parent="Enemies" instance=ExtResource("14_turret")]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 30, 4.5, 0)
+
+[node name="Gunship1" parent="Enemies" instance=ExtResource("13_gunship")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 7.0, 0)
+
+[node name="Drone3" parent="Enemies" instance=ExtResource("12_drone")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 5.0, 0)
+
+[node name="Turret2" parent="Enemies" instance=ExtResource("14_turret")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 1.5, 0)
+
+[node name="Boss" parent="Enemies" instance=ExtResource("15_boss")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 86, 5.0, 0)

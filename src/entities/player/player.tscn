@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://be4l1p8y3r5x"]
+
+[ext_resource type="Script" path="res://src/entities/player/player.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/models/player.glb" id="2_mesh"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.42
+height = 1.85
+
+[node name="Player" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="VisualRoot" type="Node3D" parent="."]
+
+[node name="Model" parent="VisualRoot" instance=ExtResource("2_mesh")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+
+[node name="Muzzle" type="Marker3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.05, 0)
+
+[node name="ThrusterLight" type="OmniLight3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 1.0, 0)
+light_color = Color(0.1, 0.8, 1, 1)
+light_energy = 1.5
+omni_range = 3.0
