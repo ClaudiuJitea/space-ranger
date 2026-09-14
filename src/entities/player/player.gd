@@ -155,7 +155,19 @@ func _physics_process(delta: float) -> void:
 	_update_animation(input_x)
 	_update_visuals(delta)
 
+var mouse_active: bool = false
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		mouse_active = true
+
 func _update_aim() -> void:
+	var input_x := Input.get_axis("move_left", "move_right")
+	if not mouse_active:
+		if input_x != 0.0:
+			aim_direction = Vector3.RIGHT if input_x > 0.0 else Vector3.LEFT
+		return
+
 	var camera := get_viewport().get_camera_3d()
 	if not camera: return
 	var mouse_pos := get_viewport().get_mouse_position()
@@ -215,11 +227,14 @@ func _play_anim(anim_name: String, blend: float = 0.15, speed: float = 1.0) -> v
 		anim_player.speed_scale = speed
 
 func _update_visuals(delta: float) -> void:
-	# Face aim direction
-	var target_facing := 1.0 if aim_direction.x >= 0.0 else -1.0
-	visual_root.scale.x = target_facing
+	# Face aim direction cleanly via Y rotation:
+	# Model forward is -Z. When facing right (+X), rotate by -100 deg (chest angled toward camera).
+	# When facing left (-X), rotate by +100 deg (chest angled toward camera).
+	var target_yaw := -deg_to_rad(100.0) if aim_direction.x >= 0.0 else deg_to_rad(100.0)
+	visual_root.rotation.y = lerp_angle(visual_root.rotation.y, target_yaw, 25.0 * delta)
+	visual_root.scale = Vector3.ONE
 	
-	# Subtle dynamic lean
+	# Subtle dynamic lean in movement direction
 	var target_tilt := -velocity.x * 0.015
 	visual_root.rotation.z = lerpf(visual_root.rotation.z, target_tilt, 12.0 * delta)
 	
