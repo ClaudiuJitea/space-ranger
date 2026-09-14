@@ -89,23 +89,27 @@ func _setup_weapon_aim() -> void:
 	if not skeleton:
 		return
 
-	# Hand attachment for blaster
+	# Hand attachment for heavy shotgun
 	var hand_attachment := BoneAttachment3D.new()
-	hand_attachment.name = "RightHandBlaster"
+	hand_attachment.name = "RightHandShotgun"
 	hand_attachment.bone_name = "mixamorig_RightHand"
 	skeleton.add_child(hand_attachment)
 
-	var blaster_scene = load("res://assets/models/blaster_rifle.glb")
-	if blaster_scene:
-		blaster_instance = blaster_scene.instantiate()
-		blaster_instance.name = "BlasterModel"
+	var shotgun_scene = load("res://assets/models/shotgun.glb")
+	if shotgun_scene:
+		blaster_instance = shotgun_scene.instantiate()
+		blaster_instance.name = "ShotgunModel"
+		# Skeleton scale is 0.01 via Character parent, so 100x brings shotgun to 1:1 meter scale
 		blaster_instance.scale = Vector3(100.0, 100.0, 100.0)
+		# Rotate so twin barrels (-Z) align forward with extended combat arm aim
+		blaster_instance.rotation_degrees = Vector3(135.0, 0.0, 0.0)
+		blaster_instance.position = Vector3(0.0, 6.0, 0.0)
 		hand_attachment.add_child(blaster_instance)
 
-		# Muzzle Marker at the tip of the blaster barrel
+		# Muzzle Marker at the tip of the heavy shotgun muzzle brake
 		var barrel_muzzle := Marker3D.new()
 		barrel_muzzle.name = "GunMuzzle"
-		barrel_muzzle.position = Vector3(0.0, 0.055, -0.45)
+		barrel_muzzle.position = Vector3(0.0, 0.075, -0.78)
 		blaster_instance.add_child(barrel_muzzle)
 		muzzle = barrel_muzzle
 
@@ -113,7 +117,7 @@ func _setup_weapon_aim() -> void:
 		muzzle_flash_light = OmniLight3D.new()
 		muzzle_flash_light.light_color = Color(0.3, 0.9, 1.0)
 		muzzle_flash_light.light_energy = 0.0
-		muzzle_flash_light.omni_range = 3.5
+		muzzle_flash_light.omni_range = 4.0
 		barrel_muzzle.add_child(muzzle_flash_light)
 
 	# Create AimTarget in the world for LookAtModifier3D
@@ -122,23 +126,14 @@ func _setup_weapon_aim() -> void:
 	add_child(aim_target)
 	aim_target.top_level = true
 
-	# LookAtModifier3D for Right Upper Arm
+	# LookAtModifier3D for Right Upper Arm only (natural solid aim without elbow twisting)
 	aim_arm_modifier = LookAtModifier3D.new()
 	aim_arm_modifier.name = "AimArmModifier"
 	aim_arm_modifier.bone_name = "mixamorig_RightArm"
 	aim_arm_modifier.forward_axis = LookAtModifier3D.BONE_AXIS_PLUS_Y
 	aim_arm_modifier.target_node = aim_target.get_path()
-	aim_arm_modifier.influence = 0.85
+	aim_arm_modifier.influence = 0.92
 	skeleton.add_child(aim_arm_modifier)
-
-	# LookAtModifier3D for Right Forearm
-	aim_forearm_modifier = LookAtModifier3D.new()
-	aim_forearm_modifier.name = "AimForearmModifier"
-	aim_forearm_modifier.bone_name = "mixamorig_RightForeArm"
-	aim_forearm_modifier.forward_axis = LookAtModifier3D.BONE_AXIS_PLUS_Y
-	aim_forearm_modifier.target_node = aim_target.get_path()
-	aim_forearm_modifier.influence = 1.0
-	skeleton.add_child(aim_forearm_modifier)
 
 func _physics_process(delta: float) -> void:
 	if GameManager.health <= 0:
@@ -321,7 +316,7 @@ func _update_visuals(delta: float) -> void:
 		muzzle.look_at(muzzle.global_position + aim_direction, Vector3.UP)
 
 func _update_weapon_aim(delta: float) -> void:
-	if not aim_target or not aim_arm_modifier or not aim_forearm_modifier:
+	if not aim_target or not aim_arm_modifier:
 		return
 
 	if aim_timer > 0.0:
@@ -331,30 +326,27 @@ func _update_weapon_aim(delta: float) -> void:
 	if muzzle_flash_light and muzzle_flash_light.light_energy > 0.0:
 		muzzle_flash_light.light_energy = maxf(muzzle_flash_light.light_energy - delta * 30.0, 0.0)
 
-	# Position AimTarget in world space along aim_direction from operative's chest/shoulder
-	var aim_origin := global_position + Vector3(0.0, 1.15, 0.0)
-	var target_pos := aim_origin + aim_direction * 4.5
+	# Position AimTarget in world space along aim_direction from operative's shoulder
+	var aim_origin := global_position + Vector3(0.0, 1.2, 0.0)
+	var target_pos := aim_origin + aim_direction * 5.0
 	aim_target.global_position = target_pos
 
-	# Aim influence: when mouse is active or shooting/aiming, full 1.0 influence!
-	# Otherwise, blends to 0.25 (low-ready tactical stance)
+	# Aim influence: when mouse is active or shooting/aiming, full 0.95 influence!
+	# Otherwise, blends to 0.3 (low-ready tactical stance)
 	var is_actively_aiming := mouse_active or aim_timer > 0.0 or Input.is_action_pressed("shoot")
-	var target_influence := 1.0 if is_actively_aiming else 0.25
-	aim_arm_modifier.influence = lerpf(aim_arm_modifier.influence, target_influence * 0.85, 20.0 * delta)
-	aim_forearm_modifier.influence = lerpf(aim_forearm_modifier.influence, target_influence, 20.0 * delta)
+	var target_influence := 0.95 if is_actively_aiming else 0.3
+	aim_arm_modifier.influence = lerpf(aim_arm_modifier.influence, target_influence, 22.0 * delta)
 
 func _shoot() -> void:
 	aim_timer = AIM_HOLD_DURATION
 	if aim_arm_modifier:
-		aim_arm_modifier.influence = 0.85
-	if aim_forearm_modifier:
-		aim_forearm_modifier.influence = 1.0
+		aim_arm_modifier.influence = 0.95
 	if muzzle_flash_light:
 		match GameManager.current_weapon:
 			0: muzzle_flash_light.light_color = Color(0.2, 0.9, 1.0)
 			1: muzzle_flash_light.light_color = Color(1.0, 0.6, 0.1)
 			2: muzzle_flash_light.light_color = Color(0.2, 1.0, 0.8)
-		muzzle_flash_light.light_energy = 3.5
+		muzzle_flash_light.light_energy = 4.0
 
 	var current_w := GameManager.current_weapon
 	fire_timer = fire_cooldowns[current_w]
