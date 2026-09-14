@@ -60,6 +60,12 @@ func _find_animation_player() -> void:
 		for c in curr.get_children():
 			stack.push_back(c)
 
+	if anim_player:
+		for anim_name in anim_player.get_animation_list():
+			var anim := anim_player.get_animation(anim_name)
+			if anim_name.to_lower() in ["idle", "run", "walk"]:
+				anim.loop_mode = Animation.LOOP_LINEAR
+
 func _physics_process(delta: float) -> void:
 	if GameManager.health <= 0:
 		return
@@ -169,24 +175,44 @@ func _update_animation(input_x: float) -> void:
 		return
 
 	if is_dashing:
-		_play_anim("dash", 0.08)
+		_play_anim("dash", 0.08, 2.5)
 	elif not is_on_floor():
 		if velocity.y > 1.0:
-			_play_anim("jump", 0.12)
+			_play_anim("jump", 0.12, 0.7)
 		else:
-			_play_anim("fall", 0.15)
+			_play_anim("fall", 0.15, 0.4)
 	else:
 		if abs(velocity.x) > 0.8:
-			_play_anim("run", 0.15)
+			_play_anim("run", 0.15, 1.25)
 		else:
-			_play_anim("idle", 0.2)
+			_play_anim("idle", 0.2, 1.0)
 
-func _play_anim(anim_name: String, blend: float = 0.15) -> void:
-	if not anim_player or current_anim == anim_name:
+func _play_anim(anim_name: String, blend: float = 0.15, speed: float = 1.0) -> void:
+	if not anim_player:
 		return
-	if anim_player.has_animation(anim_name):
-		current_anim = anim_name
-		anim_player.play(anim_name, blend)
+
+	var target_anim := ""
+	for candidate in [anim_name, anim_name.capitalize(), anim_name.to_lower(), anim_name.to_upper()]:
+		if anim_player.has_animation(candidate):
+			target_anim = candidate
+			break
+
+	if target_anim.is_empty():
+		var lower := anim_name.to_lower()
+		if lower in ["jump", "fall", "dash"]:
+			for candidate in ["Run", "run", "Walk", "walk"]:
+				if anim_player.has_animation(candidate):
+					target_anim = candidate
+					break
+
+	if target_anim.is_empty():
+		return
+
+	if current_anim != target_anim or not anim_player.is_playing():
+		current_anim = target_anim
+		anim_player.play(target_anim, blend, speed)
+	else:
+		anim_player.speed_scale = speed
 
 func _update_visuals(delta: float) -> void:
 	# Face aim direction

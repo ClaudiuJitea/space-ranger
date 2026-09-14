@@ -4,16 +4,17 @@
 [ext_resource type="PackedScene" path="res://assets/models/hazard_pylon.glb" id="2_pylon"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
-size = Vector3(0.3, 3, 0.3)
+size = Vector3(0.25, 3, 0.25)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
+transparency = 1
 shading_mode = 0
-albedo_color = Color(1, 0.08, 0.12, 1)
+albedo_color = Color(1, 0.18, 0.1, 0.85)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_1"]
 material = SubResource("StandardMaterial3D_1")
-top_radius = 0.08
-bottom_radius = 0.08
+top_radius = 0.035
+bottom_radius = 0.035
 height = 3.0
 
 [node name="HazardLaser" type="Area3D"]
@@ -36,6 +37,6 @@ mesh = SubResource("CylinderMesh_1")
 
 [node name="BeamLight" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
-light_color = Color(1, 0.05, 0.1, 1)
-light_energy = 4.0
-omni_range = 3.5
+light_color = Color(1, 0.15, 0.1, 1)
+light_energy = 0.8
+omni_range = 2.0

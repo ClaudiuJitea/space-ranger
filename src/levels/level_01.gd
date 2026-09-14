@@ -10,10 +10,18 @@ var boss_triggered: bool = false
 func _ready() -> void:
 	GameManager.reset_game()
 	
-	# Start boss disabled until player reaches boss arena (X > 75)
 	if boss:
 		boss.set_physics_process(false)
 		boss.visible = false
+
+	if "--screenshot" in OS.get_cmdline_user_args() or "--screenshot" in OS.get_cmdline_args():
+		_capture_and_quit()
+
+func _capture_and_quit() -> void:
+	await get_tree().create_timer(0.5).timeout
+	var img := get_viewport().get_texture().get_image()
+	img.save_png("/tmp/screenshot.png")
+	get_tree().quit()
 
 func _physics_process(_delta: float) -> void:
 	if not boss_triggered and player and is_instance_valid(player):
@@ -23,7 +31,6 @@ func _physics_process(_delta: float) -> void:
 func _trigger_boss_fight() -> void:
 	boss_triggered = true
 	if boss and is_instance_valid(boss):
-		boss.visible = true
-		boss.set_physics_process(true)
+		boss.activate_boss()
 		SoundManager.play("alarm", 0.9, 4.0)
 		FXManager.shake(0.5, 0.4)

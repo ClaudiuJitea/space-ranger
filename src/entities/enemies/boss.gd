@@ -25,6 +25,10 @@ func _ready() -> void:
 	health = max_health
 	home_position = global_position
 	target_hover_pos = home_position
+
+func activate_boss() -> void:
+	visible = true
+	set_physics_process(true)
 	GameManager.update_boss_health(health, max_health)
 
 func _physics_process(delta: float) -> void:
