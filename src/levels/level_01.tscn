@@ -16,12 +16,13 @@
 [ext_resource type="PackedScene" path="res://src/entities/enemies/turret.tscn" id="14_turret"]
 [ext_resource type="PackedScene" path="res://src/entities/enemies/boss.tscn" id="15_boss"]
 [ext_resource type="PackedScene" path="res://src/ui/pause_menu.tscn" id="16_pause"]
+[ext_resource type="PackedScene" path="res://src/environment/explosive_barrel.tscn" id="17_barrel"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
-sky_top_color = Color(0.02, 0.04, 0.08, 1)
-sky_horizon_color = Color(0.04, 0.08, 0.16, 1)
-ground_bottom_color = Color(0.01, 0.02, 0.04, 1)
-ground_horizon_color = Color(0.03, 0.06, 0.12, 1)
+sky_top_color = Color(0.015, 0.02, 0.035, 1)
+sky_horizon_color = Color(0.04, 0.06, 0.1, 1)
+ground_bottom_color = Color(0.01, 0.012, 0.02, 1)
+ground_horizon_color = Color(0.025, 0.035, 0.06, 1)
 
 [sub_resource type="Sky" id="Sky_1"]
 sky_material = SubResource("ProceduralSkyMaterial_1")
@@ -30,12 +31,12 @@ sky_material = SubResource("ProceduralSkyMaterial_1")
 background_mode = 2
 sky = SubResource("Sky_1")
 ambient_light_source = 2
-ambient_light_color = Color(0.12, 0.18, 0.28, 1)
-ambient_light_energy = 1.0
-tonemap_mode = 2
+ambient_light_color = Color(0.08, 0.1, 0.14, 1)
+ambient_light_energy = 0.85
+tonemap_mode = 3
 glow_enabled = true
-glow_intensity = 0.8
-glow_bloom = 0.25
+glow_intensity = 0.35
+glow_bloom = 0.12
 glow_blend_mode = 0
 
 [node name="Level01" type="Node3D"]
@@ -164,6 +165,21 @@ transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, 
 
 [node name="PropTerminal2" parent="Props" instance=ExtResource("10_term")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 68, 1.5, 0)
+
+[node name="Barrel1" parent="Props" instance=ExtResource("17_barrel")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
+
+[node name="Barrel2" parent="Props" instance=ExtResource("17_barrel")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 0, 0)
+
+[node name="Barrel3" parent="Props" instance=ExtResource("17_barrel")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 5.5, 0)
+
+[node name="Barrel4" parent="Props" instance=ExtResource("17_barrel")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 4.0, 0)
+
+[node name="Barrel5" parent="Props" instance=ExtResource("17_barrel")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 94, 4.0, 0)
 
 [node name="Hazards" type="Node3D" parent="."]
 
