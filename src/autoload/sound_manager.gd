@@ -72,7 +72,7 @@ const SFX_KEYS: Array[String] = [
 	"explosion", "boss_explosion", "hit", "shield_hit",
 	"pickup_energy", "pickup_shield", "pickup_weapon",
 	"thruster", "dash", "alarm", "weapon_swap", "rocket_launch",
-	"hitmarker", "rocket_explode", "footstep", "landing", "landing_hard",
+	"hitmarker", "rocket_explode", "footstep", "footstep_alt", "landing", "landing_hard",
 	"ui_click", "ui_hover", "notify", "respawn", "lunge", "victory",
 	"powerup", "plasma_burst",
 ]
@@ -139,6 +139,8 @@ func _synth_fallback(key: String) -> AudioStreamWAV:
 			return _create_explosion_sound(0.7, 1.0)
 		"footstep":
 			return _create_noise_whoosh(0.09, 0.22)
+		"footstep_alt":
+			return _create_noise_whoosh(0.1, 0.24)
 		"landing":
 			return _create_noise_whoosh(0.14, 0.4)
 		"landing_hard":

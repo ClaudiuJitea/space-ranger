@@ -90,6 +90,7 @@ var last_safe_position: Vector3 = Vector3.ZERO
 var _safe_pos_timer: float = 0.0
 var _was_on_floor: bool = false
 var _step_timer: float = 0.0
+var _step_alt := false
 var _emp_was_cooling: bool = false
 
 func _ready() -> void:
@@ -342,12 +343,17 @@ func _physics_process(delta: float) -> void:
 		# Landing feedback: dust puff + thud, stronger the harder the fall.
 		if not _was_on_floor:
 			_on_landed(fall_speed)
-		# Footsteps, rate scaled by run speed.
-		if not is_dashing and absf(velocity.x) > 2.0:
-			_step_timer -= delta
+			_step_timer = 0.12
+		elif not is_dashing and absf(velocity.x) > 1.0:
+			var cadence := clampf(absf(velocity.x) / move_speed, 0.35, 1.0)
+			_step_timer -= delta * (0.85 + cadence * 0.7)
 			if _step_timer <= 0.0:
-				_step_timer = 0.34
-				SoundManager.play("footstep", randf_range(0.9, 1.15), -10.0)
+				_step_timer = 0.28
+				var sfx := "footstep_alt" if _step_alt else "footstep"
+				_step_alt = not _step_alt
+				SoundManager.play(sfx, randf_range(0.92, 1.08), 2.0)
+		else:
+			_step_timer = 0.04
 
 	# Pit recovery: recall to the last safe footing at a hull cost.
 	if global_position.y < KILL_Y:
