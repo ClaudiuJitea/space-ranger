@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://f2b3o4s5s6g7"]
+[gd_scene load_steps=4 format=3 uid="uid://f2b3o4s5s6g7"]
 
-[ext_resource type="Script" path="res://src/entities/enemies/boss.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://assets/models/boss.glb" id="2_mesh"]
+[ext_resource type="Script" path="res://src/entities/enemies/campaign_boss.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/models/campaign_bosses/apex.glb" id="2_mesh"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
 size = Vector3(3.4, 2.2, 1.8)
@@ -17,16 +17,16 @@ shape = SubResource("BoxShape3D_1")
 [node name="Visual" type="Node3D" parent="."]
 
 [node name="Model" parent="Visual" instance=ExtResource("2_mesh")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="CoreLight" type="OmniLight3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0, 0)
-light_color = Color(1, 0.25, 0, 1)
-light_energy = 5.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.02, 0.57, 0)
+light_color = Color(1, 0.025, 0.04, 1)
+light_energy = 1.6
 omni_range = 6.0
 
 [node name="CannonLeft" type="Marker3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, -0.5, -1.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.68, 0.13, -0.76)
 
 [node name="CannonRight" type="Marker3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, -0.5, 1.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.68, 0.13, 0.76)

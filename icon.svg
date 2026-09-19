@@ -1,1 +1,76 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128"><rect width="124" height="124" x="2" y="2" fill="#363d52" stroke="#212532" stroke-width="4" rx="14"/><g fill="#fff" transform="translate(12.322 12.322)scale(.101)"><path d="M105 673v33q407 354 814 0v-33z"/><path fill="#478cbf" d="m105 673 152 14q12 1 15 14l4 67 132 10 8-61q2-11 15-15h162q13 4 15 15l8 61 132-10 4-67q3-13 15-14l152-14V427q30-39 56-81-35-59-83-108-43 20-82 47-40-37-88-64 7-51 8-102-59-28-123-42-26 43-46 89-49-7-98 0-20-46-46-89-64 14-123 42 1 51 8 102-48 27-88 64-39-27-82-47-48 49-83 108 26 42 56 81zm0 33v39c0 276 813 276 814 0v-39l-134 12-5 69q-2 10-14 13l-162 11q-12 0-16-11l-10-65H446l-10 65q-4 11-16 11l-162-11q-12-3-14-13l-5-69z"/><path d="M483 600c0 34 58 34 58 0v-86c0-34-58-34-58 0z"/><circle cx="725" cy="526" r="90"/><circle cx="299" cy="526" r="90"/></g><g fill="#414042" transform="translate(12.322 12.322)scale(.101)"><circle cx="307" cy="532" r="60"/><circle cx="717" cy="532" r="60"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="sky" x1="90" y1="30" x2="430" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#152033"/>
+      <stop offset="1" stop-color="#070b12"/>
+    </linearGradient>
+    <linearGradient id="gas" x1="180" y1="140" x2="380" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0d3a4"/>
+      <stop offset="0.55" stop-color="#c9a06a"/>
+      <stop offset="1" stop-color="#7a5430"/>
+    </linearGradient>
+    <clipPath id="tile">
+      <rect x="22" y="22" width="468" height="468" rx="78"/>
+    </clipPath>
+
+    <!-- Exact HUD polygons from weapon_silhouette.gd -->
+    <g id="px9">
+      <polygon points="10,31 25,24 52,24 65,29 59,38 36,38 23,46 10,44"/>
+      <polygon points="55,21 137,21 151,27 151,42 132,47 58,43 48,34"/>
+      <polygon points="142,26 218,26 231,31 218,38 143,39"/>
+      <polygon points="78,42 101,42 96,64 79,64"/>
+      <polygon points="88,13 127,13 136,19 83,19"/>
+      <g fill="#071018">
+        <rect x="63" y="27" width="60" height="4"/>
+        <circle cx="133" cy="34" r="4"/>
+        <path d="M161,29 l-5,7 M174,29 l-5,7 M187,29 l-5,7 M200,29 l-5,7" fill="none" stroke="#071018" stroke-width="3" stroke-linecap="butt"/>
+      </g>
+    </g>
+    <g id="titan8">
+      <polygon points="8,29 34,19 64,20 78,27 68,41 41,41 24,49 8,45"/>
+      <polygon points="61,18 145,18 159,25 153,43 70,47 55,35"/>
+      <rect x="145" y="22" width="78" height="7"/>
+      <rect x="145" y="35" width="78" height="7"/>
+      <rect x="218" y="19" width="14" height="12"/>
+      <rect x="218" y="33" width="14" height="12"/>
+      <polygon points="143,44 190,44 183,54 149,54"/>
+      <polygon points="81,43 105,43 99,65 80,65"/>
+      <circle cx="126" cy="51" r="9"/>
+      <g fill="#071018">
+        <circle cx="126" cy="51" r="4"/>
+        <rect x="72" y="24" width="66" height="5"/>
+        <path d="M153,45 l-4,8 M163,45 l-4,8 M173,45 l-4,8 M183,45 l-4,8" fill="none" stroke="#071018" stroke-width="2"/>
+      </g>
+    </g>
+  </defs>
+
+  <rect width="512" height="512" rx="96" fill="#0b111a"/>
+  <rect x="22" y="22" width="468" height="468" rx="78" fill="url(#sky)"/>
+
+  <g clip-path="url(#tile)">
+    <circle cx="86" cy="78" r="2" fill="#e7fbff" opacity=".65"/>
+    <circle cx="430" cy="70" r="1.6" fill="#fff6d8" opacity=".5"/>
+    <circle cx="64" cy="430" r="1.5" fill="#c9ecff" opacity=".4"/>
+    <circle cx="470" cy="400" r="1.4" fill="#fff" opacity=".3"/>
+
+    <!-- planet sits in the gap behind the cross -->
+    <g transform="rotate(-16 256 250)">
+      <ellipse cx="256" cy="250" rx="168" ry="32" fill="none" stroke="#8adfff" stroke-width="9" opacity=".7"/>
+      <ellipse cx="256" cy="250" rx="168" ry="32" fill="none" stroke="#f2d7a6" stroke-width="3" opacity=".5"/>
+    </g>
+    <circle cx="256" cy="250" r="92" fill="url(#gas)"/>
+    <ellipse cx="228" cy="226" rx="22" ry="12" fill="#fff3d8" opacity=".22"/>
+
+    <!-- Crossed rifles: barrels UP, stocks DOWN, pivot on the grip -->
+    <g transform="translate(256 318)">
+      <g fill="#3ee0ff" transform="rotate(-52) translate(-90 -50) scale(1.58)">
+        <use href="#titan8"/>
+      </g>
+      <g fill="#3ee0ff" transform="scale(-1 1) rotate(-52) translate(-90 -50) scale(1.58)">
+        <use href="#px9"/>
+      </g>
+    </g>
+  </g>
+
+  <rect x="22" y="22" width="468" height="468" rx="78" fill="none" stroke="#3ee0ff" stroke-width="8"/>
+</svg>

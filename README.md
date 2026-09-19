@@ -1,127 +1,107 @@
 # Space Ranger: Eclipse Protocol
 
-A fast-paced, modern 2.5D side-scrolling space shooter platformer built in **Godot 4.7 Forward+** with 3D assets crafted and exported directly using **Blender MCP**.
+A 2.5D side-scrolling space shooter built in **Godot 4.7 Forward+**. Drop onto a ring-station in orbit of a gas giant, unlock weapons as you fight, and take down three campaign bosses.
 
----
+<p align="center">
+  <img src="icon.png" width="128" alt="Space Ranger icon">
+</p>
 
-## 🚀 Features
+<p align="center">
+  <a href="https://github.com/ClaudiuJitea/space-ranger/releases/latest"><img src="https://img.shields.io/github/v/release/ClaudiuJitea/space-ranger?label=download" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/Godot-4.7-478cbf?logo=godotengine&logoColor=white" alt="Godot 4.7">
+  <img src="https://img.shields.io/badge/platform-Linux%20%7C%20Windows-3ee0ff" alt="Linux and Windows">
+</p>
 
-- **Sleek Cyber-Sci-Fi Aesthetic**:
-  - High-contrast Forward+ rendering with ACES tone mapping, real-time Bloom & Glow, and dynamic PBR lighting.
-  - Deep parallax starfield with celestial nebulas and tumbling 3D asteroids.
-  - Dark carbon hulls, brushed titanium accents, and glowing cyan/amber/crimson emissive conduits.
+![Cinematic main menu](docs/screenshots/main-menu.png)
 
-- **Fast, Punchy 2.5D Platformer Shooter Combat**:
-  - **Full 360° Mouse Aiming**: Aim and shoot smoothly in any direction while jumping or running.
-  - **Double Jump / Thruster Boost**: High-tech jetpack thruster bursts for vertical traversal.
-  - **Evasive Dash**: High-speed thruster slide with invulnerability window to dodge enemy bullet hell patterns.
-  - **Shield & Hull Regeneration**: Dynamic energy shield absorbs damage first, regenerating after a cooldown.
+![In-game combat on Apex Protocol](docs/screenshots/gameplay.png)
 
-- **Modular Weapon Arsenal**:
-  - **1. Pulse Blaster**: Rapid-fire sleek cyan plasma bolts with crisp recoil.
-  - **2. Plasma Scatter**: 5-way wide fan spread for close-to-mid-range swarm clearing.
-  - **3. Photon Railgun**: Heavy hyper-velocity beam that pierces through lines of enemies with camera shake.
+![Apex Iron Vanguard boss fight](docs/screenshots/boss.png)
 
-- **Challenging Enemy Roster & Boss Encounter**:
-  - **Recon Drone (Stalker)**: Agile aerial drones that hover with sine wave oscillation and track the player with red optic sensors.
-  - **Heavy Sentinel Gunship**: Armored flying patrol gunship with alternating twin plasma cannons.
-  - **Automated Swivel Turret**: Wall/ceiling/floor mounted robotic turrets with 2.5D tracking and rapid 3-round bursts.
-  - **Hazard Laser Pylons**: Pulsing vertical laser barriers blocking corridors.
-  - **Apex Dreadnought Core (Boss Encounter)**: Giant mechanized boss with multi-phase attacks:
-    - Phase 1: Heavy twin cannons & radial missile fans.
-    - Phase 2 (Enraged < 50% HP): Overclocked fire rate, staggered barrages, and drone reinforcements.
-    - Cinematic multi-explosion death sequence.
+## Play
 
-- **Procedural Audio Synthesizer**:
-  - Built-in GDScript `SoundManager` utilizing `AudioStreamWAV` buffers.
-  - Generates authentic 16-bit retro-futuristic sound effects (lasers, beams, explosions, shield pings, thrusters, pickups) with 0 external dependencies!
+Grab the latest build from **[Releases](https://github.com/ClaudiuJitea/space-ranger/releases/latest)**.
 
-- **Sleek Modern Glassmorphic HUD**:
-  - Real-time animated health & shield gauges.
-  - Dynamic score counter with combo multiplier badges (`x2`, `x3`, etc.).
-  - Weapon selector interface with active weapon highlight.
-  - Boss health bar with flashing warning states.
-  - Tactical Pause Menu and Game Over / Victory redeployment screens.
+| Platform | Package |
+| --- | --- |
+| Linux x86_64 | `SpaceRanger-linux-x86_64.tar.gz` |
+| Windows x86_64 | `SpaceRanger-windows-x86_64.zip` |
 
----
+**Linux**
 
-## 🎮 Controls
+```bash
+tar -xzf SpaceRanger-linux-x86_64.tar.gz
+chmod +x SpaceRanger.x86_64
+./SpaceRanger.x86_64
+```
 
-| Action | Primary Key / Input | Secondary Key |
-|---|---|---|
-| **Move Left / Right** | `A` / `D` | `←` / `→` |
-| **Jump / Thruster Double Jump** | `Space` | `W` / `↑` |
-| **Evasive Dash** | `Shift` | Right Mouse Button |
-| **Aim** | Mouse Cursor | 360° Cursor Tracking |
-| **Fire Blaster** | Left Mouse Button | `J` |
-| **Weapon 1 (Pulse Blaster)** | `1` | |
-| **Weapon 2 (Plasma Scatter)** | `2` | |
-| **Weapon 3 (Photon Railgun)** | `3` | |
-| **Pause / Tactical Standby** | `Esc` | `P` |
+**Windows** — unzip and run `SpaceRanger.exe`.
 
----
+From source (Godot 4.7.2 or later):
 
-## 🎨 3D Assets Created via Blender MCP
+```bash
+godot --path .
+```
 
-All 3D assets were created procedurally and exported to `.glb` format using the connected **Blender 5.2.1 LTS** via the Blender MCP server:
+## Campaign
 
-1. **`player.glb`**: Armored space ranger cyber-suit featuring curved aerodynamic cyan visor, chest reactor, shoulder pauldrons, jetpack thrusters, and integrated plasma rifle.
-2. **`drone.glb`**: Triangular aerodynamic chassis with swept wings, glowing crimson optic eye, and underslung laser cannon.
-3. **`gunship.glb`**: Heavy armored gunship fuselage with dual rotary plasma pods and twin glowing engine exhausts.
-4. **`turret.glb`**: Beveled base plate with rotating swivel hemisphere and dual over-and-under laser barrels.
-5. **`boss.glb`**: Apex Dreadnought Core featuring octagonal armored hull, glowing core reactor, upper missile pods, dual heavy cannons, and quad thrusters.
-6. **`platform_straight.glb`**: Catwalk platform deck with anti-slip carbon grating, brushed steel brackets, and glowing neon cyan hazard trim.
-7. **`platform_pillar.glb`**: Structural background space station support column with vertical glowing energy conduit.
-8. **`hazard_pylon.glb`**: Industrial emitter base and post with dual prongs and glowing laser focus sphere.
-9. **`pickup_energy.glb`**: Gold diamond crystal with orbiting glowing cyan ring.
-10. **`pickup_shield.glb`**: Blue glowing cylindrical energy cell with containment rings.
-11. **`pickup_weapon.glb`**: High-tech ordnance module with glowing orange crosshair glyph.
-12. **`prop_crate.glb`**: Armored sci-fi container with reinforced corner brackets and indicator light.
-13. **`prop_terminal.glb`**: Interactive sleek computer terminal with angled glowing holographic console.
+Three linked missions. You start with the **PX-9 Pulse Blaster**. Scattergun, railgun and launcher are pickups — they stay locked until you find them.
 
----
+| Mission | Length | Boss |
+| --- | --- | --- |
+| Apex Protocol | 256 m | Apex Iron Vanguard |
+| Nightglass Reactor | 288 m | RIFT Alpha Matriarch |
+| Emberfall Citadel | 328 m | Emberfall Seraph |
 
-## 🛠️ Project Structure
+Sync relays with **F** to open each arena. Cyan suit anchors restore hull and shield and save a checkpoint for the current run.
+
+## Combat
+
+- 360° mouse aim, double jump, dash with i-frames
+- Regenerating energy shield over hull
+- Heat-managed arsenal — overheat and you wait
+- EMP grenade for clustered fire
+- Three-phase bosses with telegraphed attacks and a bonus-damage core window
+
+**Weapons**
+
+| Slot | Weapon | Role |
+| --- | --- | --- |
+| 1 | PX-9 Pulse Blaster | Rapid plasma, always available |
+| 2 | TITAN-8 Scattergun | Close-range pellet fan |
+| 3 | LR-77 Photon Railgun | Piercing beam |
+| 4 | HV-4 Havoc Launcher | Homing rockets, splash, rocket-jump |
+
+## Controls
+
+| Action | Input |
+| --- | --- |
+| Move | `A` / `D` or arrows |
+| Jump / double jump | `Space`, `W` or `↑` |
+| Dash | `Shift` or right mouse |
+| Aim | Mouse |
+| Fire | Left mouse or `J` |
+| Weapons | `1` `2` `3` `4` or mouse wheel |
+| EMP | `E` or `Q` |
+| Interact / sync relay | `F` |
+| Pause | `Esc` or `P` |
+
+## Project
 
 ```
 space-ranger/
-├── assets/
-│   └── models/               # 3D GLB assets generated via Blender MCP
-│       ├── player.glb
-│       ├── drone.glb
-│       ├── gunship.glb
-│       ├── turret.glb
-│       ├── boss.glb
-│       ├── platform_straight.glb
-│       ├── platform_pillar.glb
-│       ├── hazard_pylon.glb
-│       ├── pickup_energy.glb
-│       ├── pickup_shield.glb
-│       ├── pickup_weapon.glb
-│       ├── prop_crate.glb
-│       └── prop_terminal.glb
+├── assets/models/     # GLB characters, weapons, bosses
 ├── src/
-│   ├── autoload/             # Global managers
-│   │   ├── game_manager.gd   # Health, shields, score, weapons, boss states
-│   │   ├── sound_manager.gd  # Procedural sound effect synthesizer
-│   │   └── fx_manager.gd     # Screen shake, particle bursts, hit sparks
-│   ├── entities/
-│   │   ├── player/           # Space Ranger CharacterBody3D
-│   │   ├── enemies/          # Drones, Gunships, Turrets, Boss
-│   │   └── pickups/          # Energy, Shield, Weapon upgrades
-│   ├── environment/          # Modular platforms, hazard lasers, 3D backdrop
-│   ├── projectiles/          # Pulse, Scatter, Railgun beam, Enemy lasers
-│   ├── ui/                   # Modern glassmorphic HUD & Pause Menu
-│   └── levels/               # Level 01: Orbital Dreadnought Astra-09
+│   ├── autoload/      # Game, audio, FX
+│   ├── entities/      # Player, enemies, pickups
+│   ├── environment/   # Platforms, hazards, backdrop
+│   ├── levels/        # Three campaign missions
+│   ├── projectiles/
+│   └── ui/            # Main menu, HUD, pause
+├── docs/screenshots/
 └── project.godot
 ```
 
----
+Export presets live in `export_presets.cfg` (Linux + Windows, x86_64, embedded PCK). Blender work files are not packed into the game builds.
 
-## 🏃 Running the Game
-
-To launch the game directly from terminal:
-```bash
-/home/clau/Godot/Godot_v4.7.2-stable_linux.x86_64 res://src/levels/level_01.tscn
-```
-Or open the project folder in the Godot Editor and press **F5** (Play Project).
+Made with [Godot 4.7](https://godotengine.org/).

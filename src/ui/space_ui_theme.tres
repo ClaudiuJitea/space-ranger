@@ -1,0 +1,13 @@
+[gd_resource type="Theme" load_steps=3 format=3]
+
+[ext_resource type="FontFile" path="res://assets/fonts/Exo2-Variable.ttf" id="1_display"]
+[ext_resource type="FontFile" path="res://assets/fonts/ShareTechMono-Regular.ttf" id="2_mono"]
+
+[resource]
+default_font = ExtResource("1_display")
+default_font_size = 14
+Label/colors/font_color = Color(0.78, 0.82, 0.86, 1)
+Button/colors/font_color = Color(0.78, 0.83, 0.88, 1)
+Button/colors/font_hover_color = Color(0.96, 0.98, 1, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+CheckButton/colors/font_color = Color(0.72, 0.78, 0.84, 1)

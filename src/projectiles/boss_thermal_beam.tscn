@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bt1b2m3s4p5t"]
+
+[ext_resource type="Script" path="res://src/projectiles/boss_thermal_beam.gd" id="1_script"]
+
+[node name="BossThermalBeam" type="Area3D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_script")

@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3 uid="uid://daw3x7v2k5m8q"]
+
+[ext_resource type="Script" path="res://src/entities/enemies/crawler.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/models/concept_enemies_v2/crawler.glb" id="2_mesh"]
+[ext_resource type="Script" path="res://src/entities/enemies/reference_enemy_visuals.gd" id="3_anim"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(1.32, 0.85, 0.78)
+
+[node name="Crawler" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.44, 0)
+shape = SubResource("BoxShape3D_1")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Model" parent="Visual" instance=ExtResource("2_mesh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="ModelAnimation" type="Node" parent="."]
+script = ExtResource("3_anim")
+model_path = NodePath("../Visual/Model")
+kind = "crawler"
+
+[node name="EyeLight" type="OmniLight3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.455, 0.425, 0)
+light_color = Color(1, 0.025, 0.04, 1)
+light_energy = 0.55
+omni_range = 3.0

@@ -1,4 +1,4 @@
-extends CharacterBody3D
+extends StaticBody3D
 
 @export var max_health: float = 20.0
 @export var explosion_damage: float = 90.0
@@ -10,7 +10,7 @@ var exploded: bool = false
 @onready var visual: Node3D = $Visual
 
 func _ready() -> void:
-	add_to_group("enemies") # allows projectiles to hit it
+	add_to_group("damageable_props")
 	health = max_health
 
 func take_damage(amount: float) -> void:
@@ -21,7 +21,9 @@ func take_damage(amount: float) -> void:
 	FXManager.spawn_hit_spark(global_position, Color(1.0, 0.4, 0.1))
 
 	if health <= 0.0:
-		explode()
+		# Deferred: explosions query the physics space, which is locked while
+		# projectile hit callbacks are still flushing.
+		call_deferred("explode")
 
 func explode() -> void:
 	if exploded:

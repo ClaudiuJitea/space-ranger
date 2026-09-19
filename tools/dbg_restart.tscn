@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bvt5qmg7mol0i"]
+
+[ext_resource type="Script" path="res://tools/dbg_restart.gd" id="1_script"]
+
+[node name="DbgRestart" type="Node"]
+script = ExtResource("1_script")

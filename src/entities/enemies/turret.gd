@@ -61,7 +61,8 @@ func _fire_single_shot() -> void:
 	var p = proj_scene.instantiate()
 	get_parent().add_child(p)
 	p.global_position = spawn_pos
-	p.init_projectile(current_aim_dir, 22.0, 12.0, Color(1.0, 0.1, 0.1), true, false)
+	p.init_projectile(current_aim_dir, 22.0, 12.0, Color(0.78, 0.84, 0.77), true, false)
+	FXManager.spawn_muzzle_flash(spawn_pos, current_aim_dir, Color(0.78, 0.84, 0.77))
 	SoundManager.play("enemy_laser", 1.3, -3.0)
 	FXManager.shake(0.08, 0.06)
 

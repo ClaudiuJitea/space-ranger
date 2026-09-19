@@ -1,35 +1,41 @@
-[gd_scene format=3 uid="uid://l8m9n0o1p2q3"]
+[gd_scene load_steps=6 format=3 uid="uid://l8m9n0o1p2q3"]
 
 [ext_resource type="Script" path="res://src/ui/hud.gd" id="1_script"]
+[ext_resource type="Script" path="res://src/ui/segmented_bar.gd" id="2_bar"]
+[ext_resource type="Script" path="res://src/ui/holographic_panel.gd" id="3_holo"]
+[ext_resource type="Theme" path="res://src/ui/space_ui_theme.tres" id="4_theme"]
+[ext_resource type="FontFile" path="res://assets/fonts/ShareTechMono-Regular.ttf" id="5_mono"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tactical_panel"]
-bg_color = Color(0.06, 0.08, 0.11, 0.85)
+bg_color = Color(0.004, 0.018, 0.029, 0.92)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.25, 0.3, 0.38, 0.6)
+border_color = Color(0.13, 0.54, 0.68, 0.82)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
-corner_radius_bottom_right = 4
+corner_radius_bottom_right = 12
 corner_radius_bottom_left = 4
+shadow_color = Color(0, 0, 0, 0.72)
+shadow_size = 18
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar_bg"]
-bg_color = Color(0.04, 0.05, 0.07, 0.9)
+bg_color = Color(0.005, 0.012, 0.022, 0.94)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health_fill"]
-bg_color = Color(0.2, 0.75, 0.45, 0.95)
+bg_color = Color(0.12, 0.92, 0.6, 1)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_shield_fill"]
-bg_color = Color(0.15, 0.55, 0.85, 0.95)
+bg_color = Color(0.05, 0.72, 1, 1)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
@@ -50,16 +56,22 @@ corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_popup"]
-bg_color = Color(0.06, 0.08, 0.11, 0.95)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.35, 0.42, 0.55, 0.8)
+bg_color = Color(0.009, 0.014, 0.021, 0.99)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.28, 0.34, 0.4, 0.92)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
-corner_radius_bottom_right = 8
+corner_radius_bottom_right = 16
 corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.82)
+shadow_size = 28
+content_margin_left = 32.0
+content_margin_top = 24.0
+content_margin_right = 32.0
+content_margin_bottom = 24.0
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -69,22 +81,26 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme = ExtResource("4_theme")
 script = ExtResource("1_script")
 
 [node name="TopLeft" type="MarginContainer" parent="."]
 layout_mode = 0
-offset_left = 24.0
+offset_left = 26.0
 offset_top = 24.0
-offset_right = 340.0
-offset_bottom = 135.0
+offset_right = 342.0
+offset_bottom = 142.0
 
 [node name="Panel" type="Panel" parent="TopLeft"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tactical_panel")
+script = ExtResource("3_holo")
+variant = "vitals"
 
 [node name="VBox" type="VBoxContainer" parent="TopLeft"]
 layout_mode = 2
-theme_override_constants/separation = 7
+theme_override_constants/separation = 4
+alignment = 1
 
 [node name="Margin" type="MarginContainer" parent="TopLeft/VBox"]
 layout_mode = 2
@@ -96,9 +112,10 @@ theme_override_constants/margin_right = 12
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
 theme_override_font_sizes/font_size = 13
-text = "OPERATIVE // SUIT TELEMETRY"
+text = "SR-07  //  VANGUARD"
 
 [node name="ShieldContainer" type="HBoxContainer" parent="TopLeft/VBox"]
+custom_minimum_size = Vector2(0, 17)
 layout_mode = 2
 theme_override_constants/separation = 8
 
@@ -107,24 +124,34 @@ custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.4, 0.75, 1, 1)
 theme_override_font_sizes/font_size = 12
-text = "  SHIELD"
+text = "    SHIELD"
 
-[node name="ShieldBar" type="ProgressBar" parent="TopLeft/VBox/ShieldContainer"]
-custom_minimum_size = Vector2(150, 14)
+[node name="ShieldBar" type="Control" parent="TopLeft/VBox/ShieldContainer"]
+custom_minimum_size = Vector2(150, 11)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_shield_fill")
 value = 100.0
-show_percentage = false
+fill_color = Color(0.05, 0.72, 1, 1)
+script = ExtResource("2_bar")
 
 [node name="ShieldLabel" type="Label" parent="TopLeft/VBox/ShieldContainer"]
-custom_minimum_size = Vector2(65, 0)
+custom_minimum_size = Vector2(58, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
+theme_override_fonts/font = ExtResource("5_mono")
 text = "80 / 80"
 
+[node name="ShieldAlert" type="Label" parent="TopLeft/VBox"]
+visible = false
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.68, 0.2, 1)
+theme_override_font_sizes/font_size = 10
+text = "              ▲  SHIELD OFFLINE"
+horizontal_alignment = 1
+
 [node name="HealthContainer" type="HBoxContainer" parent="TopLeft/VBox"]
+custom_minimum_size = Vector2(0, 17)
 layout_mode = 2
 theme_override_constants/separation = 8
 
@@ -133,21 +160,22 @@ custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.8, 0.45, 1)
 theme_override_font_sizes/font_size = 12
-text = "  HULL"
+text = "    HULL"
 
-[node name="HealthBar" type="ProgressBar" parent="TopLeft/VBox/HealthContainer"]
-custom_minimum_size = Vector2(150, 14)
+[node name="HealthBar" type="Control" parent="TopLeft/VBox/HealthContainer"]
+custom_minimum_size = Vector2(150, 11)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_health_fill")
 value = 100.0
-show_percentage = false
+fill_color = Color(0.12, 0.92, 0.6, 1)
+solid_fill = true
+script = ExtResource("2_bar")
 
 [node name="HealthLabel" type="Label" parent="TopLeft/VBox/HealthContainer"]
-custom_minimum_size = Vector2(65, 0)
+custom_minimum_size = Vector2(58, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
+theme_override_fonts/font = ExtResource("5_mono")
 text = "100 / 100"
 
 [node name="TopRight" type="MarginContainer" parent="."]
@@ -155,15 +183,17 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -260.0
+offset_left = -226.0
 offset_top = 24.0
-offset_right = -24.0
-offset_bottom = 110.0
+offset_right = -26.0
+offset_bottom = 126.0
 grow_horizontal = 0
 
 [node name="Panel" type="Panel" parent="TopRight"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tactical_panel")
+script = ExtResource("3_holo")
+variant = "score"
 
 [node name="ScoreContainer" type="VBoxContainer" parent="TopRight"]
 layout_mode = 2
@@ -172,14 +202,15 @@ alignment = 1
 [node name="Title" type="Label" parent="TopRight/ScoreContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.7, 0.8, 1)
-theme_override_font_sizes/font_size = 12
-text = "TACTICAL SCORE"
+theme_override_font_sizes/font_size = 10
+text = "MISSION SCORE"
 horizontal_alignment = 1
 
 [node name="ScoreLabel" type="Label" parent="TopRight/ScoreContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 26
+theme_override_fonts/font = ExtResource("5_mono")
 text = "000000"
 horizontal_alignment = 1
 
@@ -191,56 +222,103 @@ theme_override_font_sizes/font_size = 12
 text = "MULTIPLIER x1"
 horizontal_alignment = 1
 
+[node name="HostilesLabel" type="Label" parent="TopRight/ScoreContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.69, 0.76, 0.82, 1)
+theme_override_font_sizes/font_size = 10
+text = "HOSTILES   00"
+horizontal_alignment = 1
+
+[node name="ObjectiveStrip" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 430.0
+offset_top = 13.0
+offset_right = -430.0
+offset_bottom = 42.0
+grow_horizontal = 2
+
+[node name="Panel" type="Panel" parent="ObjectiveStrip"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tactical_panel")
+script = ExtResource("3_holo")
+variant = "strip"
+
+[node name="ObjectiveLabel" type="Label" parent="ObjectiveStrip"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.86, 0.94, 1)
+theme_override_font_sizes/font_size = 11
+text = "OBJECTIVE  //  SECURE THE PLATFORM"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="BottomLeft" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = -120.0
-offset_right = 290.0
-offset_bottom = -24.0
+offset_left = 26.0
+offset_top = -176.0
+offset_right = 478.0
+offset_bottom = -22.0
 grow_vertical = 0
 
 [node name="Panel" type="Panel" parent="BottomLeft"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tactical_panel")
+script = ExtResource("3_holo")
+variant = "weapon"
 
-[node name="WeaponContainer" type="VBoxContainer" parent="BottomLeft"]
+[node name="WeaponContainer" type="Control" parent="BottomLeft"]
 layout_mode = 2
-theme_override_constants/separation = 4
-alignment = 1
 
 [node name="WeaponIcon" type="Label" parent="BottomLeft/WeaponContainer"]
-layout_mode = 2
+layout_mode = 0
+offset_left = 188.0
+offset_top = 16.0
+offset_right = 444.0
+offset_bottom = 34.0
 theme_override_colors/font_color = Color(0.6, 0.7, 0.85, 1)
-theme_override_font_sizes/font_size = 12
-text = "SLOT 1 // KINETIC PULSE"
-horizontal_alignment = 1
+theme_override_font_sizes/font_size = 10
+text = "SLOT 01 // KINETIC"
+horizontal_alignment = 0
+clip_text = true
 
 [node name="WeaponLabel" type="Label" parent="BottomLeft/WeaponContainer"]
-layout_mode = 2
+layout_mode = 0
+offset_left = 188.0
+offset_top = 36.0
+offset_right = 444.0
+offset_bottom = 60.0
 theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
-theme_override_font_sizes/font_size = 16
-text = "PULSE BLASTER"
-horizontal_alignment = 1
+theme_override_font_sizes/font_size = 15
+text = "PX-9 PULSE BLASTER"
+horizontal_alignment = 0
+clip_text = true
 
-[node name="HeatBar" type="ProgressBar" parent="BottomLeft/WeaponContainer"]
-custom_minimum_size = Vector2(230, 8)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_heat_fill")
+[node name="HeatBar" type="Control" parent="BottomLeft/WeaponContainer"]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 66.0
+offset_right = 438.0
+offset_bottom = 78.0
 max_value = 100.0
 value = 0.0
-show_percentage = false
+fill_color = Color(0.05, 0.72, 1, 1)
+segment_count = 12
+script = ExtResource("2_bar")
 
 [node name="EMPLabel" type="Label" parent="BottomLeft/WeaponContainer"]
-layout_mode = 2
+layout_mode = 0
+offset_left = 16.0
+offset_top = 108.0
+offset_right = 438.0
+offset_bottom = 138.0
 theme_override_colors/font_color = Color(0.4, 0.85, 1, 1)
 theme_override_font_sizes/font_size = 12
 text = "[E/Q] EMP GRENADE: READY"
-horizontal_alignment = 1
+horizontal_alignment = 0
 
 [node name="TopCenter" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -248,9 +326,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -280.0
-offset_top = 24.0
+offset_top = 50.0
 offset_right = 280.0
-offset_bottom = 80.0
+offset_bottom = 100.0
 grow_horizontal = 2
 
 [node name="BossContainer" type="VBoxContainer" parent="TopCenter"]
@@ -271,95 +349,152 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_boss_fill")
 value = 100.0
 show_percentage = false
 
+[node name="EndScrim" type="ColorRect" parent="."]
+z_index = 90
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0.002, 0.008, 0.018, 0.72)
+
 [node name="GameOverPanel" type="PanelContainer" parent="."]
+z_index = 100
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -180.0
-offset_top = -120.0
-offset_right = 180.0
-offset_bottom = 120.0
+offset_left = -245.0
+offset_top = -168.0
+offset_right = 245.0
+offset_bottom = 168.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_popup")
 
 [node name="VBox" type="VBoxContainer" parent="GameOverPanel"]
 layout_mode = 2
-theme_override_constants/separation = 14
+theme_override_constants/separation = 12
 alignment = 1
+
+[node name="Eyebrow" type="Label" parent="GameOverPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.25, 0.72, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "VANGUARD OS  //  MISSION TERMINATED"
+horizontal_alignment = 1
 
 [node name="Title" type="Label" parent="GameOverPanel/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.25, 0.2, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(1, 0.3, 0.22, 1)
+theme_override_font_sizes/font_size = 27
 text = "CRITICAL SUIT BREACH"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="GameOverPanel/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
-text = "OPERATIVE KIA"
+theme_override_colors/font_color = Color(0.58, 0.67, 0.78, 1)
+theme_override_font_sizes/font_size = 13
+text = "LIFE SUPPORT OFFLINE  ·  COMBAT LINK SEVERED"
 horizontal_alignment = 1
 
 [node name="ScoreFinal" type="Label" parent="GameOverPanel/VBox"]
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
-text = "FINAL SCORE: 000000"
+theme_override_colors/font_color = Color(0.94, 0.97, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "FINAL SCORE  //  000000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Directive" type="Label" parent="GameOverPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.54, 0.65, 1)
+theme_override_font_sizes/font_size = 11
+text = "SELECT RECOVERY PROTOCOL"
 horizontal_alignment = 1
 
-[node name="RestartBtn" type="Button" parent="GameOverPanel/VBox"]
-custom_minimum_size = Vector2(160, 38)
+[node name="Actions" type="HBoxContainer" parent="GameOverPanel/VBox"]
 layout_mode = 2
-size_flags_horizontal = 4
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="RestartBtn" type="Button" parent="GameOverPanel/VBox/Actions"]
+custom_minimum_size = Vector2(190, 42)
+layout_mode = 2
 text = "REDEPLOY"
 
 [node name="VictoryPanel" type="PanelContainer" parent="."]
+z_index = 100
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -120.0
-offset_right = 200.0
-offset_bottom = 120.0
+offset_left = -245.0
+offset_top = -168.0
+offset_right = 245.0
+offset_bottom = 168.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_popup")
 
 [node name="VBox" type="VBoxContainer" parent="VictoryPanel"]
 layout_mode = 2
-theme_override_constants/separation = 14
+theme_override_constants/separation = 12
 alignment = 1
+
+[node name="Eyebrow" type="Label" parent="VictoryPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 0.78, 1)
+theme_override_font_sizes/font_size = 12
+text = "VANGUARD OS  //  OBJECTIVE CONFIRMED"
+horizontal_alignment = 1
 
 [node name="Title" type="Label" parent="VictoryPanel/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.3, 0.85, 0.5, 1)
-theme_override_font_sizes/font_size = 24
-text = "MISSION ACCOMPLISHED"
+theme_override_colors/font_color = Color(0.25, 1, 0.72, 1)
+theme_override_font_sizes/font_size = 27
+text = "SECTOR SECURED"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="VictoryPanel/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
-text = "APEX GUARDIAN NEUTRALIZED"
+theme_override_colors/font_color = Color(0.58, 0.67, 0.78, 1)
+theme_override_font_sizes/font_size = 13
+text = "APEX DREADNOUGHT NEUTRALIZED  ·  ROUTE OPEN"
 horizontal_alignment = 1
 
 [node name="ScoreVictory" type="Label" parent="VictoryPanel/VBox"]
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
-text = "FINAL SCORE: 000000"
+theme_override_colors/font_color = Color(0.94, 0.97, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "MISSION SCORE  //  000000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Directive" type="Label" parent="VictoryPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.54, 0.65, 1)
+theme_override_font_sizes/font_size = 11
+text = "NEXT DIRECTIVE AVAILABLE"
 horizontal_alignment = 1
 
-[node name="RestartVictoryBtn" type="Button" parent="VictoryPanel/VBox"]
-custom_minimum_size = Vector2(160, 38)
+[node name="Actions" type="HBoxContainer" parent="VictoryPanel/VBox"]
 layout_mode = 2
-size_flags_horizontal = 4
-text = "REDEPLOY"
+theme_override_constants/separation = 12
+alignment = 1
 
-[connection signal="pressed" from="GameOverPanel/VBox/RestartBtn" to="." method="_on_restart_pressed"]
-[connection signal="pressed" from="VictoryPanel/VBox/RestartVictoryBtn" to="." method="_on_restart_pressed"]
+[node name="RestartVictoryBtn" type="Button" parent="VictoryPanel/VBox/Actions"]
+custom_minimum_size = Vector2(190, 42)
+layout_mode = 2
+text = "CONTINUE"
+
+[connection signal="pressed" from="GameOverPanel/VBox/Actions/RestartBtn" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="VictoryPanel/VBox/Actions/RestartVictoryBtn" to="." method="_on_victory_action_pressed"]

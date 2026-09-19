@@ -1,0 +1,111 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://src/levels/level_03.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://src/entities/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://src/ui/hud.tscn" id="3_hud"]
+[ext_resource type="Script" path="res://src/environment/camera_controller.gd" id="4_cam"]
+[ext_resource type="Script" path="res://src/environment/space_backdrop.gd" id="5_space"]
+[ext_resource type="PackedScene" path="res://src/ui/pause_menu.tscn" id="6_pause"]
+[ext_resource type="Script" path="res://src/environment/cinematic_set_dressing.gd" id="7_cinema"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2"]
+sky_top_color = Color(0.025, 0.013, 0.008, 1)
+sky_horizon_color = Color(0.12, 0.07, 0.04, 1)
+ground_bottom_color = Color(0.006, 0.008, 0.025, 1)
+ground_horizon_color = Color(0.04, 0.03, 0.04, 1)
+
+[sub_resource type="Sky" id="Sky_2"]
+sky_material = SubResource("ProceduralSkyMaterial_2")
+
+[sub_resource type="Environment" id="Environment_2"]
+background_mode = 2
+sky = SubResource("Sky_2")
+ambient_light_source = 2
+ambient_light_color = Color(0.23, 0.18, 0.14, 1)
+ambient_light_energy = 0.92
+tonemap_mode = 3
+tonemap_white = 5.0
+ssao_enabled = true
+ssao_radius = 1.7
+ssao_intensity = 2.0
+glow_enabled = true
+glow_intensity = 0.35
+glow_strength = 0.72
+glow_bloom = 0.025
+glow_hdr_threshold = 1.55
+fog_enabled = true
+fog_light_color = Color(0.16, 0.09, 0.05, 1)
+fog_density = 0.0035
+fog_sky_affect = 0.18
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.014
+volumetric_fog_albedo = Color(0.22, 0.17, 0.23, 1)
+volumetric_fog_emission = Color(0.012, 0.006, 0.014, 1)
+volumetric_fog_emission_energy = 0.22
+volumetric_fog_length = 52.0
+
+[node name="Level03" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_2")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-48, -32, -8)
+light_color = Color(0.82, 0.78, 0.86, 1)
+light_energy = 1.35
+shadow_enabled = true
+directional_shadow_max_distance = 75.0
+
+[node name="MagentaRim" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-38, 142, 18)
+light_color = Color(1, 0.32, 0.10, 1)
+light_energy = 0.55
+shadow_enabled = false
+
+[node name="CoreLight" type="OmniLight3D" parent="."]
+position = Vector3(307, 6, 1.5)
+light_color = Color(0.7, 0.62, 0.57, 1)
+light_energy = 2.2
+omni_range = 22.0
+shadow_enabled = true
+
+[node name="SpaceBackdrop" type="Node3D" parent="."]
+script = ExtResource("5_space")
+
+[node name="CinematicSetDressing" type="Node3D" parent="."]
+script = ExtResource("7_cinema")
+world_end_x = 348
+alert_start_x = 292.0
+accent_color = Color(1, 0.36, 0.06, 1)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(-2.1, 5.2, 12.4)
+current = true
+fov = 44.0
+script = ExtResource("4_cam")
+target_node = NodePath("../Player")
+boss_trigger_x = 292.0
+boss_focus_x = 307.0
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
+mission_name = "EMBERFALL CITADEL"
+boss_display_name = "TARGET: EMBERFALL SERAPH"
+victory_detail = "SERAPH DESTROYED // ECLIPSE PROTOCOL ENDED"
+
+[node name="PauseMenu" parent="." instance=ExtResource("6_pause")]
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector3(0, 0.8, 0)
+
+[node name="BackgroundDecor" type="Node3D" parent="."]
+
+[node name="Platforms" type="Node3D" parent="."]
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="Hazards" type="Node3D" parent="."]
+
+[node name="Pickups" type="Node3D" parent="."]
+
+[node name="Enemies" type="Node3D" parent="."]

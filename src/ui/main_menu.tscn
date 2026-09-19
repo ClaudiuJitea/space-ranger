@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://m8n7o6p5q4r3"]
+
+[ext_resource type="Script" path="res://src/ui/main_menu.gd" id="1_script"]
+[ext_resource type="Script" path="res://src/environment/space_backdrop.gd" id="2_space"]
+[ext_resource type="PackedScene" path="res://assets/models/menu_title_dock.glb" id="3_dock"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_menu"]
+sky_top_color = Color(0.018, 0.02, 0.06, 1)
+sky_horizon_color = Color(0.08, 0.06, 0.16, 1)
+ground_bottom_color = Color(0.006, 0.008, 0.02, 1)
+ground_horizon_color = Color(0.035, 0.03, 0.08, 1)
+
+[sub_resource type="Sky" id="Sky_menu"]
+sky_material = SubResource("ProceduralSkyMaterial_menu")
+
+[sub_resource type="Environment" id="Environment_menu"]
+background_mode = 2
+sky = SubResource("Sky_menu")
+ambient_light_source = 2
+ambient_light_color = Color(0.10, 0.12, 0.18, 1)
+ambient_light_energy = 0.28
+tonemap_mode = 3
+tonemap_white = 5.5
+ssao_enabled = true
+ssao_radius = 1.4
+ssao_intensity = 1.15
+glow_enabled = true
+glow_intensity = 0.42
+glow_strength = 0.72
+glow_bloom = 0.06
+glow_hdr_threshold = 1.35
+glow_blend_mode = 0
+fog_enabled = true
+fog_light_color = Color(0.10, 0.08, 0.06, 1)
+fog_density = 0.004
+fog_sky_affect = 0.08
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.007
+volumetric_fog_albedo = Color(0.12, 0.10, 0.08, 1)
+volumetric_fog_emission = Color(0.08, 0.06, 0.04, 1)
+volumetric_fog_emission_energy = 0.08
+volumetric_fog_anisotropy = 0.35
+adjustment_enabled = true
+adjustment_brightness = 1.02
+adjustment_contrast = 1.12
+adjustment_saturation = 1.08
+
+[node name="MainMenu" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_menu")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 10, 20, 15)
+light_color = Color(1.0, 0.84, 0.62, 1)
+light_energy = 1.65
+shadow_enabled = true
+directional_shadow_max_distance = 28.0
+
+[node name="SpaceBackdrop" type="Node3D" parent="."]
+script = ExtResource("2_space")
+cinematic_menu = true
+
+[node name="TitleDock" parent="." instance=ExtResource("3_dock")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="MenuCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.72, 1.62, 5.95)
+current = true
+fov = 36.0

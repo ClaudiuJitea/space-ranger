@@ -1,0 +1,4 @@
+{
+  "code": "exec(compile(open('/home/clau/Godot/games/space-ranger/tools/build_enemy_assets.py').read(), '/home/clau/Godot/games/space-ranger/tools/build_enemy_assets.py', 'exec'))",
+  "user_prompt": "Redesign the game's in-game elements to reach AAA-grade visual polish, covering UI/HUD, menus, enemy models, and the shooting/projectile system. Use the current build as the functional baseline — preserve all existing gameplay logic, values, and mechanics. This is a visual and asset fidelity pass only."
+}

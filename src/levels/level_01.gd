@@ -1,36 +1,28 @@
-extends Node3D
-
-@onready var player: CharacterBody3D = $Player
-@onready var camera: Camera3D = $Camera3D
-@onready var hud: Control = $HUD
-@onready var boss: CharacterBody3D = $Enemies/Boss
-
-var boss_triggered: bool = false
+extends "res://src/levels/campaign_level.gd"
 
 func _ready() -> void:
-	GameManager.reset_game()
+	if not GameManager.retry_pending:
+		GameManager.reset_game()
+	# Keep the original docking encounters; move their arena to the new finale.
+	for group_name in ["Platforms", "Props", "Hazards", "Pickups", "Enemies", "BackgroundDecor"]:
+		for child in get_node(group_name).get_children():
+			if child is Node3D and child.position.x >= 96:
+				child.position.x += 128
+	_route(96, 220, 0)
+	_platform("FinalDeck250", Vector3(250, 0, 0))
+	_platform("FinalDeck254", Vector3(254, 0, 0))
+	populate_encounters(104, 216)
 	
-	if boss:
-		boss.set_physics_process(false)
-		boss.visible = false
+	# --- Secret Cache: High-ground reward on the uniform upper supply deck (reached via lift) ---
+	var cache_scene: PackedScene = preload("res://src/environment/secret_cache.tscn")
+	_spawn(cache_scene, props, Vector3(125.5, 6.3, 0))
 
-	if "--screenshot" in OS.get_cmdline_user_args() or "--screenshot" in OS.get_cmdline_args():
-		_capture_and_quit()
+	# Pre-boss supply staging area & in-arena pickups
+	_spawn(preload("res://src/environment/prop_terminal.tscn"), props, Vector3(220, 0, 0))
+	_spawn(preload("res://src/environment/prop_crate.tscn"), props, Vector3(222, 0, 0))
+	_spawn(PICKUP, pickups, Vector3(221, 1.2, 0), {"pickup_type": 2, "weapon_to_unlock": 3})
+	_spawn(PICKUP, pickups, Vector3(232, 1.2, 0), {"pickup_type": 0}) # Health Core in arena
+	_spawn(PICKUP, pickups, Vector3(246, 1.2, 0), {"pickup_type": 1}) # Shield Core in arena
+	_spawn(preload("res://src/environment/prop_crate.tscn"), props, Vector3(238, 0, 0)) # Mid-arena crate
 
-func _capture_and_quit() -> void:
-	await get_tree().create_timer(0.5).timeout
-	var img := get_viewport().get_texture().get_image()
-	img.save_png("/tmp/screenshot.png")
-	get_tree().quit()
-
-func _physics_process(_delta: float) -> void:
-	if not boss_triggered and player and is_instance_valid(player):
-		if player.global_position.x >= 72.0:
-			_trigger_boss_fight()
-
-func _trigger_boss_fight() -> void:
-	boss_triggered = true
-	if boss and is_instance_valid(boss):
-		boss.activate_boss()
-		SoundManager.play("alarm", 0.9, 4.0)
-		FXManager.shake(0.5, 0.4)
+	setup_mission(1, 224, 256, [76.0, 164.0])

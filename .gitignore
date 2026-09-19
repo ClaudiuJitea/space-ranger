@@ -1,3 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+/dist/*
+!/dist/.gdignore
+.codex/
+*.blend1

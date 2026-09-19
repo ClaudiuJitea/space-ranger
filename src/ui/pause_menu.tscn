@@ -1,21 +1,16 @@
-[gd_scene format=3 uid="uid://n0o1p2q3r4s5"]
+[gd_scene load_steps=5 format=3 uid="uid://n0o1p2q3r4s5"]
 
 [ext_resource type="Script" path="res://src/ui/pause_menu.gd" id="1_script"]
+[ext_resource type="Theme" path="res://src/ui/space_ui_theme.tres" id="3_theme"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
-bg_color = Color(0.02, 0.04, 0.07, 0.8)
+bg_color = Color(0.002, 0.006, 0.01, 0.78)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
-bg_color = Color(0.04, 0.07, 0.12, 0.95)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0.85, 1, 0.75)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[sub_resource type="StyleBoxEmpty" id="StyleBoxFlat_card"]
+content_margin_left = 30.0
+content_margin_top = 25.0
+content_margin_right = 30.0
+content_margin_bottom = 25.0
 
 [node name="PauseMenu" type="Control"]
 process_mode = 3
@@ -26,6 +21,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
+theme = ExtResource("3_theme")
 
 [node name="BackgroundDim" type="Panel" parent="."]
 layout_mode = 1
@@ -43,30 +39,31 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -160.0
-offset_top = -140.0
-offset_right = 160.0
-offset_bottom = 140.0
+offset_left = -195.0
+offset_top = -165.0
+offset_right = 195.0
+offset_bottom = 165.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_card")
 
 [node name="VBox" type="VBoxContainer" parent="Card"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 13
 alignment = 1
 
 [node name="Title" type="Label" parent="Card/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.85, 1, 1)
-theme_override_font_sizes/font_size = 24
-text = "TACTICAL PAUSE"
+theme_override_colors/font_color = Color(0.86, 0.9, 0.92, 1)
+theme_override_font_sizes/font_size = 22
+text = "MISSION SUSPENDED"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Card/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.6, 0.7, 0.85, 1)
-text = "SYSTEM STANDBY"
+theme_override_colors/font_color = Color(0.46, 0.56, 0.64, 1)
+theme_override_font_sizes/font_size = 11
+text = "VANGUARD / LOCAL CONTROL"
 horizontal_alignment = 1
 
 [node name="ResumeBtn" type="Button" parent="Card/VBox"]
@@ -85,7 +82,7 @@ text = "RESTART SECTOR"
 custom_minimum_size = Vector2(180, 42)
 layout_mode = 2
 size_flags_horizontal = 4
-text = "ABORT OPERATION"
+text = "ABORT TO MENU"
 
 [connection signal="pressed" from="Card/VBox/ResumeBtn" to="." method="_on_resume_pressed"]
 [connection signal="pressed" from="Card/VBox/RestartBtn" to="." method="_on_restart_pressed"]

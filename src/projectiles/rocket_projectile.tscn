@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://d4q3nwt1ybi"]
+
+[ext_resource type="Script" path="res://src/projectiles/rocket_projectile.gd" id="1_script"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1"]
+radius = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_smoke"]
+shading_mode = 0
+transparency = 1
+albedo_color = Color(0.55, 0.55, 0.6, 0.55)
+emission_enabled = true
+emission = Color(0.35, 0.09, 0.01, 1)
+emission_energy_multiplier = 0.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_trail"]
+direction = Vector3(0, 0, 1)
+spread = 12.0
+initial_velocity_min = 0.5
+initial_velocity_max = 1.5
+gravity = Vector3(0, 1.5, 0)
+scale_min = 0.08
+scale_max = 0.2
+color = Color(0.55, 0.55, 0.6, 0.7)
+
+[sub_resource type="SphereMesh" id="SphereMesh_trail"]
+material = SubResource("StandardMaterial3D_smoke")
+radius = 0.1
+height = 0.2
+
+[node name="RocketProjectile" type="Area3D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_1")
+
+[node name="ExhaustLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.25)
+light_color = Color(1, 0.45, 0.1, 1)
+light_energy = 2.0
+omni_range = 3.0
+
+[node name="Trail" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.3)
+amount = 18
+lifetime = 0.35
+local_coords = false
+process_material = SubResource("ParticleProcessMaterial_trail")
+draw_pass_1 = SubResource("SphereMesh_trail")

@@ -1,7 +1,8 @@
-[gd_scene format=3 uid="uid://dg5n6h7i8p9k"]
+[gd_scene load_steps=4 format=3 uid="uid://dg5n6h7i8p9k"]
 
 [ext_resource type="Script" path="res://src/entities/enemies/gunship.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://assets/models/gunship.glb" id="2_mesh"]
+[ext_resource type="PackedScene" path="res://assets/models/concept_enemies_v2/gunship.glb" id="2_mesh"]
+[ext_resource type="Script" path="res://src/entities/enemies/reference_enemy_visuals.gd" id="3_anim"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
 size = Vector3(1.6, 0.9, 1.2)
@@ -17,16 +18,21 @@ shape = SubResource("BoxShape3D_1")
 [node name="Visual" type="Node3D" parent="."]
 
 [node name="Model" parent="Visual" instance=ExtResource("2_mesh")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="ModelAnimation" type="Node" parent="."]
+script = ExtResource("3_anim")
+model_path = NodePath("../Visual/Model")
+kind = "gunship"
 
 [node name="MuzzleLeft" type="Marker3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, -0.1, -0.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.72, -0.22, -0.29)
 
 [node name="MuzzleRight" type="Marker3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, -0.1, 0.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.72, -0.22, 0.29)
 
 [node name="EngineLight" type="OmniLight3D" parent="Visual"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0, 0)
-light_color = Color(1, 0.4, 0, 1)
-light_energy = 2.5
+light_color = Color(0.42, 0.04, 1, 1)
+light_energy = 0.7
 omni_range = 3.5

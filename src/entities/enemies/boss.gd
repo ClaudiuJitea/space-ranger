@@ -86,7 +86,8 @@ func _fire_twin_cannon(dir: Vector3) -> void:
 			var p = proj_scene.instantiate()
 			get_parent().add_child(p)
 			p.global_position = spawn_pos
-			p.init_projectile(dir, 24.0, 24.0, Color(1.0, 0.2, 0.0), true, false)
+			p.init_projectile(dir, 24.0, 24.0, Color(0.78, 0.84, 0.77), true, false)
+			FXManager.spawn_muzzle_flash(spawn_pos, dir, Color(0.78, 0.84, 0.77))
 	SoundManager.play("enemy_laser", 0.8, 2.0)
 	FXManager.shake(0.3, 0.2)
 
@@ -102,14 +103,16 @@ func _fire_missile_fan(center_dir: Vector3) -> void:
 		var p = proj_scene.instantiate()
 		get_parent().add_child(p)
 		p.global_position = global_position
-		p.init_projectile(fire_dir, 18.0, 18.0, Color(1.0, 0.1, 0.1), true, false)
+		p.init_projectile(fire_dir, 18.0, 18.0, Color(0.78, 0.84, 0.77), true, false)
+		FXManager.spawn_muzzle_flash(global_position, fire_dir, Color(0.78, 0.84, 0.77))
 
 	SoundManager.play("laser_spread", 0.7, 3.0)
 	FXManager.shake(0.35, 0.25)
 
 func _fire_staggered_volley(dir: Vector3) -> void:
 	for i in range(3):
-		await get_tree().create_timer(0.12).timeout
+		# pause-aware timer: the volley freezes while the game is paused
+		await get_tree().create_timer(0.12, false).timeout
 		if is_dead:
 			return
 		_fire_twin_cannon(dir)
@@ -133,8 +136,8 @@ func take_damage(amount: float) -> void:
 		SoundManager.play("alarm", 0.9, 4.0)
 		FXManager.shake(0.6, 0.5)
 		if core_light:
-			core_light.light_color = Color(1.0, 0.0, 0.1)
-			core_light.light_energy = 8.0
+			core_light.light_color = Color(0.9, 0.77, 0.48)
+			core_light.light_energy = 3.2
 
 	var tween := create_tween()
 	tween.tween_property(visual, "scale", Vector3(visual.scale.x * 1.05, 1.05, 1.05), 0.04)
@@ -147,18 +150,22 @@ func _start_death_sequence() -> void:
 	is_dead = true
 	GameManager.add_score(5000)
 	SoundManager.play("boss_explosion", 0.9, 6.0)
-	
+
 	for i in range(8):
 		var offset := Vector3(randf_range(-2.0, 2.0), randf_range(-1.5, 1.5), 0)
 		FXManager.spawn_explosion(global_position + offset, 1.5, Color(1.0, 0.4, 0.1))
+		if i % 3 == 0:
+			FXManager.spawn_shockwave(global_position + offset, Color(1.0, 0.5, 0.15), 3.0)
 		SoundManager.play("explosion", randf_range(0.7, 1.3), 3.0)
-		await get_tree().create_timer(0.25).timeout
+		await get_tree().create_timer(0.25, false).timeout
 
 	FXManager.spawn_explosion(global_position, 3.5, Color(1.0, 0.6, 0.2))
+	FXManager.spawn_shockwave(global_position, Color(1.0, 0.6, 0.25), 9.0)
 	FXManager.shake(1.0, 0.8)
 	SoundManager.play("boss_explosion", 0.7, 8.0)
-	
+
 	visible = false
-	await get_tree().create_timer(1.2).timeout
+	await get_tree().create_timer(1.2, false).timeout
+	GameManager.submit_score(GameManager.score)
 	GameManager.emit_signal("level_completed")
 	queue_free()

@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://d4e5f6g7h8i9"]
+
+[ext_resource type="Script" path="res://src/environment/hazard_pulse_beacon.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/models/hazard_pulse_beacon.glb" id="2_model"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_hazard"]
+height = 5.0
+radius = 3.2
+
+[node name="HazardPulseBeacon" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
+
+[node name="DamageArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DamageArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+shape = SubResource("CylinderShape3D_hazard")
+
+[node name="BeaconLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 0)
+light_color = Color(1, 0.55, 0.1, 1)
+light_energy = 0.8
+omni_range = 3.5
+shadow_enabled = false

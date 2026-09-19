@@ -17,12 +17,15 @@
 [ext_resource type="PackedScene" path="res://src/entities/enemies/boss.tscn" id="15_boss"]
 [ext_resource type="PackedScene" path="res://src/ui/pause_menu.tscn" id="16_pause"]
 [ext_resource type="PackedScene" path="res://src/environment/explosive_barrel.tscn" id="17_barrel"]
+[ext_resource type="PackedScene" path="res://src/entities/enemies/crawler.tscn" id="18_crawler"]
+[ext_resource type="Script" path="res://src/environment/cinematic_set_dressing.gd" id="19_cinema"]
+[ext_resource type="PackedScene" path="res://src/entities/enemies/enforcer.tscn" id="20_enforcer"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
-sky_top_color = Color(0.015, 0.02, 0.035, 1)
-sky_horizon_color = Color(0.04, 0.06, 0.1, 1)
-ground_bottom_color = Color(0.01, 0.012, 0.02, 1)
-ground_horizon_color = Color(0.025, 0.035, 0.06, 1)
+sky_top_color = Color(0.012, 0.016, 0.04, 1)
+sky_horizon_color = Color(0.05, 0.08, 0.14, 1)
+ground_bottom_color = Color(0.008, 0.01, 0.018, 1)
+ground_horizon_color = Color(0.03, 0.045, 0.08, 1)
 
 [sub_resource type="Sky" id="Sky_1"]
 sky_material = SubResource("ProceduralSkyMaterial_1")
@@ -31,14 +34,29 @@ sky_material = SubResource("ProceduralSkyMaterial_1")
 background_mode = 2
 sky = SubResource("Sky_1")
 ambient_light_source = 2
-ambient_light_color = Color(0.12, 0.15, 0.22, 1)
+ambient_light_color = Color(0.14, 0.17, 0.25, 1)
 ambient_light_energy = 1.0
 tonemap_mode = 3
+tonemap_white = 6.0
+ssao_enabled = true
+ssao_radius = 1.5
+ssao_intensity = 1.8
 glow_enabled = true
-glow_intensity = 0.2
-glow_bloom = 0.0
+glow_intensity = 0.32
+glow_strength = 0.72
+glow_bloom = 0.02
 glow_hdr_threshold = 1.6
 glow_blend_mode = 0
+fog_enabled = true
+fog_light_color = Color(0.1, 0.14, 0.22, 1)
+fog_density = 0.004
+fog_sky_affect = 0.15
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.012
+volumetric_fog_albedo = Color(0.17, 0.21, 0.27, 1)
+volumetric_fog_emission = Color(0.015, 0.025, 0.05, 1)
+volumetric_fog_emission_energy = 0.35
+volumetric_fog_length = 48.0
 
 [node name="Level01" type="Node3D"]
 script = ExtResource("1_script")
@@ -49,19 +67,41 @@ environment = SubResource("Environment_1")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 10, 20, 15)
 light_color = Color(0.85, 0.92, 1, 1)
-light_energy = 1.4
+light_energy = 1.5
 shadow_enabled = true
+directional_shadow_max_distance = 70.0
 
 [node name="SpaceBackdrop" type="Node3D" parent="."]
 script = ExtResource("5_space")
 
+[node name="CinematicSetDressing" type="Node3D" parent="."]
+script = ExtResource("19_cinema")
+world_end_x = 272
+alert_start_x = 224.0
+
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 14)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1, 5.2, 12.4)
 current = true
-fov = 60.0
+fov = 44.0
 script = ExtResource("4_cam")
+target_node = NodePath("../Player")
+
+[node name="CoolRimLight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-52, -128, 14)
+light_color = Color(0.16, 0.58, 1, 1)
+light_energy = 0.85
+shadow_enabled = false
+
+[node name="BossArenaLight" type="OmniLight3D" parent="."]
+position = Vector3(110, 5, 1.5)
+light_color = Color(0.74, 0.66, 0.5, 1)
+light_energy = 2.2
+omni_range = 18.0
+shadow_enabled = true
 
 [node name="HUD" parent="." instance=ExtResource("3_hud")]
+next_level_path = "res://src/levels/level_02.tscn"
+mission_name = "APEX PROTOCOL"
 
 [node name="PauseMenu" parent="." instance=ExtResource("16_pause")]
 
@@ -84,6 +124,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 68, 6, -4)
 
 [node name="Pillar5" parent="BackgroundDecor" instance=ExtResource("7_pillar")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 92, 7, -4)
+
+[node name="Pillar6" parent="BackgroundDecor" instance=ExtResource("7_pillar")]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 108, 5, -5)
+
+[node name="Pillar7" parent="BackgroundDecor" instance=ExtResource("7_pillar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 122, 8, -4)
 
 [node name="Platforms" type="Node3D" parent="."]
 
@@ -132,26 +178,41 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 66, 1.5, 0)
 [node name="PreBoss_3" parent="Platforms" instance=ExtResource("6_plat")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70, 1.5, 0)
 
+[node name="Gauntlet_Low1" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 76, 0.5, 0)
+
+[node name="Gauntlet_Low2" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 0.5, 0)
+
+[node name="Gauntlet_High1" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 84, 1.8, 0)
+
+[node name="Gauntlet_High2" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 90, 1.0, 0)
+
+[node name="Gauntlet_Exit" parent="Platforms" instance=ExtResource("6_plat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 96, 2.0, 0)
+
 [node name="BossArena_Floor1" parent="Platforms" instance=ExtResource("6_plat")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 102, 0, 0)
 
 [node name="BossArena_Floor2" parent="Platforms" instance=ExtResource("6_plat")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 82, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 106, 0, 0)
 
 [node name="BossArena_Floor3" parent="Platforms" instance=ExtResource("6_plat")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 86, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 110, 0, 0)
 
 [node name="BossArena_Floor4" parent="Platforms" instance=ExtResource("6_plat")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 90, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 114, 0, 0)
 
 [node name="BossArena_Floor5" parent="Platforms" instance=ExtResource("6_plat")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 94, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118, 0, 0)
 
 [node name="BossArena_HighL" parent="Platforms" instance=ExtResource("6_plat")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 4.0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 102, 4.0, 0)
 
 [node name="BossArena_HighR" parent="Platforms" instance=ExtResource("6_plat")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 94, 4.0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118, 4.0, 0)
 
 [node name="Props" type="Node3D" parent="."]
 
@@ -177,10 +238,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 0, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 5.5, 0)
 
 [node name="Barrel4" parent="Props" instance=ExtResource("17_barrel")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 4.0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 85.0, 1.8, 0)
 
 [node name="Barrel5" parent="Props" instance=ExtResource("17_barrel")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 94, 4.0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118, 4.0, 0)
 
 [node name="Hazards" type="Node3D" parent="."]
 
@@ -195,6 +256,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 0, 0)
 is_pulsing = true
 pulse_on_time = 1.8
 pulse_off_time = 1.8
+
+[node name="HazardLaser3" parent="Hazards" instance=ExtResource("8_hazard")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80.5, 0.5, 0)
+is_pulsing = true
+pulse_on_time = 1.35
+pulse_off_time = 1.1
 
 [node name="Pickups" type="Node3D" parent="."]
 
@@ -215,12 +282,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 6.7, 0)
 pickup_type = 2
 weapon_to_unlock = 2
 
+[node name="WeaponLauncherPickup" parent="Pickups" instance=ExtResource("9_pickup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 58, 4.6, 0)
+pickup_type = 2
+weapon_to_unlock = 3
+
 [node name="EnergyPickup2" parent="Pickups" instance=ExtResource("9_pickup")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54, 5.0, 0)
 
 [node name="ShieldPickup2" parent="Pickups" instance=ExtResource("9_pickup")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70, 2.7, 0)
 pickup_type = 1
+
+[node name="EnergyPickup3" parent="Pickups" instance=ExtResource("9_pickup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 90, 2.2, 0)
 
 [node name="Enemies" type="Node3D" parent="."]
 
@@ -229,6 +304,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 3.5, 0)
 
 [node name="Drone2" parent="Enemies" instance=ExtResource("12_drone")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 5.0, 0)
+
+[node name="Enforcer1" parent="Enemies" instance=ExtResource("20_enforcer")]
+position = Vector3(9, 0.25, 0)
 
 [node name="Turret1" parent="Enemies" instance=ExtResource("14_turret")]
 transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 30, 4.5, 0)
@@ -239,8 +317,38 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 7.0, 0)
 [node name="Drone3" parent="Enemies" instance=ExtResource("12_drone")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 5.0, 0)
 
+[node name="Drone4" parent="Enemies" instance=ExtResource("12_drone")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 4.5, 0)
+
+[node name="Enforcer2" parent="Enemies" instance=ExtResource("20_enforcer")]
+position = Vector3(35, 0.25, 0)
+
 [node name="Turret2" parent="Enemies" instance=ExtResource("14_turret")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 1.5, 0)
 
+[node name="Enforcer3" parent="Enemies" instance=ExtResource("20_enforcer")]
+position = Vector3(69, 1.75, 0)
+
+[node name="Gunship2" parent="Enemies" instance=ExtResource("13_gunship")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 88, 8.0, 0)
+
+[node name="Crawler1" parent="Enemies" instance=ExtResource("18_crawler")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 0.3, 0)
+
+[node name="Crawler2" parent="Enemies" instance=ExtResource("18_crawler")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 66, 1.8, 0)
+
+[node name="Crawler3" parent="Enemies" instance=ExtResource("18_crawler")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 108, 0.3, 0)
+
+[node name="Drone5" parent="Enemies" instance=ExtResource("12_drone")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 3.8, 0)
+
+[node name="Enforcer4" parent="Enemies" instance=ExtResource("20_enforcer")]
+position = Vector3(90, 1.25, 0)
+
+[node name="Turret3" parent="Enemies" instance=ExtResource("14_turret")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 96, 2.0, 0)
+
 [node name="Boss" parent="Enemies" instance=ExtResource("15_boss")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 86, 5.0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 110, 5.0, 0)

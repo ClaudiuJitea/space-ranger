@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://b7g8h9i0j1k2"]
+
+[ext_resource type="PackedScene" path="res://assets/models/level_modular_gantry.glb" id="1_mesh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gantry"]
+size = Vector3(6.0, 0.4, 1.8)
+
+[node name="ModularGantry" type="StaticBody3D"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+shape = SubResource("BoxShape3D_gantry")
+
+[node name="Model" parent="." instance=ExtResource("1_mesh")]

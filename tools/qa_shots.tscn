@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://tgb4g5st0vln"]
+
+[ext_resource type="Script" path="res://tools/qa_shots.gd" id="1_script"]
+
+[node name="QAShots" type="Node"]
+script = ExtResource("1_script")
