@@ -19,7 +19,7 @@ var _focus_target: Control = null
 var _menu_root: Control = null
 var _transitioning := false
 var _title_box: Control = null
-var _title_plate: Panel = null
+var _title_plate: Control = null
 var _chrome: Control = null
 var _deck_holo: Node3D = null
 var _deck_gunship: Node3D = null
@@ -463,69 +463,84 @@ func _build_ui() -> void:
 	root.theme = UI_THEME
 	canvas.add_child(root)
 
-	# --- Game Title Branding (Cinematic sci-fi header) --------------------
-	_title_plate = Panel.new()
-	_title_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_title_plate.offset_left = 36.0
-	_title_plate.offset_top = 62.0
-	_title_plate.offset_right = 620.0
-	_title_plate.offset_bottom = 248.0
-	var plate := StyleBoxFlat.new()
-	plate.bg_color = Color(0.01, 0.03, 0.055, 0.84)
-	plate.border_width_left = 3
-	plate.border_color = Color(0.22, 0.82, 1.0, 0.9)
-	plate.content_margin_left = 18.0
-	plate.content_margin_right = 18.0
-	plate.content_margin_top = 10.0
-	plate.content_margin_bottom = 10.0
-	plate.corner_radius_top_right = 2
-	plate.corner_radius_bottom_right = 2
-	_title_plate.add_theme_stylebox_override("panel", plate)
-	root.add_child(_title_plate)
+	# Tight cinematic lockup — type only, no empty title slab.
+	var title_lock := PanelContainer.new()
+	_title_plate = title_lock
+	_title_box = title_lock
+	title_lock.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_lock.clip_contents = false
+	title_lock.offset_left = 52.0
+	title_lock.offset_top = 58.0
+	title_lock.grow_horizontal = Control.GROW_DIRECTION_END
+	title_lock.grow_vertical = Control.GROW_DIRECTION_END
+	var lock_style := StyleBoxEmpty.new()
+	lock_style.content_margin_left = 0
+	lock_style.content_margin_right = 0
+	lock_style.content_margin_top = 0
+	lock_style.content_margin_bottom = 0
+	title_lock.add_theme_stylebox_override("panel", lock_style)
+	root.add_child(title_lock)
 
-	var title_box := VBoxContainer.new()
-	_title_box = title_box
-	title_box.offset_left = 72.0
-	title_box.offset_right = 720.0
-	title_box.offset_top = 86.0
-	title_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	title_box.add_theme_constant_override("separation", 8)
-	root.add_child(title_box)
+	var lock_row := HBoxContainer.new()
+	lock_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lock_row.add_theme_constant_override("separation", 16)
+	title_lock.add_child(lock_row)
 
-	var title_lbl := _make_title("SPACE RANGER", 72, Color(0.94, 0.99, 1.0))
+	var accent := ColorRect.new()
+	accent.custom_minimum_size = Vector2(3, 0)
+	accent.color = Color(0.24, 0.86, 1.0, 0.95)
+	accent.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	lock_row.add_child(accent)
+
+	var title_col := VBoxContainer.new()
+	title_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_col.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	title_col.add_theme_constant_override("separation", 6)
+	lock_row.add_child(title_col)
+
+	var eyebrow := _make_title("COMMAND DECK  //  SR-07", 11, Color(0.28, 0.84, 1.0, 0.92))
+	eyebrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	eyebrow.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	title_col.add_child(eyebrow)
+
+	var title_lbl := _make_title("SPACE RANGER", 44, Color(0.96, 0.99, 1.0))
 	title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	title_lbl.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	title_lbl.clip_text = false
+	title_lbl.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	title_lbl.add_theme_font_override("font", DISPLAY_FONT)
-	title_lbl.add_theme_color_override("font_shadow_color", Color(0.0, 0.02, 0.05, 0.8))
+	title_lbl.add_theme_color_override("font_shadow_color", Color(0.0, 0.02, 0.06, 0.9))
 	title_lbl.add_theme_constant_override("shadow_offset_x", 0)
 	title_lbl.add_theme_constant_override("shadow_offset_y", 3)
-	title_lbl.add_theme_constant_override("shadow_outline_size", 6)
-	title_lbl.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
-	title_lbl.add_theme_constant_override("outline_size", 4)
-	title_box.add_child(title_lbl)
+	title_lbl.add_theme_constant_override("shadow_outline_size", 8)
+	title_lbl.add_theme_color_override("font_outline_color", Color(0.01, 0.03, 0.06, 0.88))
+	title_lbl.add_theme_constant_override("outline_size", 6)
+	title_col.add_child(title_lbl)
 
 	var subtitle_row := HBoxContainer.new()
-	subtitle_row.add_theme_constant_override("separation", 8)
+	subtitle_row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	subtitle_row.add_theme_constant_override("separation", 10)
 	var sub_bar_l := ColorRect.new()
-	sub_bar_l.custom_minimum_size = Vector2(28, 2)
-	sub_bar_l.color = Color(0.2, 0.8, 1.0, 0.8)
+	sub_bar_l.custom_minimum_size = Vector2(22, 1)
+	sub_bar_l.color = Color(0.24, 0.86, 1.0, 0.85)
 	sub_bar_l.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	subtitle_row.add_child(sub_bar_l)
-
-	var subtitle := _make_title("ECLIPSE PROTOCOL", 13, Color(0.3, 0.85, 1.0))
+	var subtitle := _make_title("ECLIPSE PROTOCOL", 12, Color(0.38, 0.88, 1.0, 0.95))
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	subtitle.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	subtitle_row.add_child(subtitle)
-
 	var sub_bar_r := ColorRect.new()
-	sub_bar_r.custom_minimum_size = Vector2(60, 2)
-	sub_bar_r.color = Color(0.2, 0.8, 1.0, 0.4)
+	sub_bar_r.custom_minimum_size = Vector2(22, 1)
+	sub_bar_r.color = Color(0.24, 0.86, 1.0, 0.45)
 	sub_bar_r.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	subtitle_row.add_child(sub_bar_r)
-	title_box.add_child(subtitle_row)
+	title_col.add_child(subtitle_row)
 
-	var best := _make_title("★ BEST RECORD   %06d" % GameManager.high_score, 12, Color(0.92, 0.92, 0.95, 0.85))
+	var best := _make_title("BEST RECORD   %06d" % GameManager.high_score, 11, Color(0.78, 0.88, 0.94, 0.8))
 	best.name = "BestScore"
 	best.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	title_box.add_child(best)
+	best.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	title_col.add_child(best)
 
 	# --- Action Game Buttons (right-side holographic stack) --------------
 	_main_box = VBoxContainer.new()
@@ -584,12 +599,12 @@ func _build_ui() -> void:
 
 	# Clean cinematic fade & slide intro
 	root.modulate.a = 0.0
-	title_box.modulate.a = 0.0
-	title_box.position.x -= 20.0
+	title_lock.modulate.a = 0.0
+	title_lock.position.x -= 20.0
 	var intro := root.create_tween().set_parallel(true)
 	intro.tween_property(root, "modulate:a", 1.0, 0.25).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
-	intro.tween_property(title_box, "modulate:a", 1.0, 0.35).set_delay(0.1)
-	intro.tween_property(title_box, "position:x", title_box.position.x + 20.0, 0.4).set_delay(0.1).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
+	intro.tween_property(title_lock, "modulate:a", 1.0, 0.35).set_delay(0.1)
+	intro.tween_property(title_lock, "position:x", title_lock.position.x + 20.0, 0.4).set_delay(0.1).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	intro.tween_property(_main_box, "modulate:a", 1.0, 0.35).set_delay(0.05)
 
 func _build_controls_panel(root: Control) -> PanelContainer:
