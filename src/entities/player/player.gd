@@ -416,7 +416,7 @@ func _update_aim() -> void:
 		if dir.length_squared() > 0.1:
 			aim_direction = dir.normalized()
 
-func _update_animation(input_x: float) -> void:
+func _update_animation(_input_x: float) -> void:
 	if not anim_player:
 		return
 
@@ -429,7 +429,14 @@ func _update_animation(input_x: float) -> void:
 			_play_anim("fall", 0.15, 0.4)
 	else:
 		if abs(velocity.x) > 0.8:
-			_play_anim("run", 0.15, 1.25)
+			# Keep the planted foot travelling against the character's movement.
+			# When aim and movement oppose each other the operative is backpedalling,
+			# so running the locomotion cycle backwards gives the legs a proper
+			# backward reach instead of a forward-running/moonwalk silhouette.
+			var facing_sign := 1.0 if aim_direction.x >= 0.0 else -1.0
+			var is_backpedaling := velocity.x * facing_sign < 0.0
+			var locomotion_speed := -1.25 if is_backpedaling else 1.25
+			_play_anim("run", 0.15, locomotion_speed)
 		else:
 			_play_anim("idle", 0.2, 1.0)
 
@@ -456,7 +463,13 @@ func _play_anim(anim_name: String, blend: float = 0.15, speed: float = 1.0) -> v
 
 	if current_anim != target_anim or not anim_player.is_playing():
 		current_anim = target_anim
-		anim_player.play(target_anim, blend, speed)
+		# Negative playback must enter at the end of the loop. This matters when
+		# backpedalling starts directly from idle; direction changes while already
+		# moving retain their current phase and therefore do not pop between feet.
+		# Playback rate lives in speed_scale so it is not multiplied a second time
+		# when this same animation is updated on the next frame.
+		anim_player.speed_scale = speed
+		anim_player.play(target_anim, blend, 1.0, speed < 0.0)
 	else:
 		anim_player.speed_scale = speed
 
