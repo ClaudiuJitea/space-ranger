@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/music_pad.mp3-1ed1ea4fd78246862d06419821dd0c2
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

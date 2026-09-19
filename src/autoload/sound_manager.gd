@@ -77,16 +77,26 @@ const SFX_KEYS: Array[String] = [
 	"powerup", "plasma_burst",
 ]
 
-func _load_mp3(path: String, loop := false) -> AudioStreamMP3:
-	if not FileAccess.file_exists(path):
-		return null
-	var bytes := FileAccess.get_file_as_bytes(path)
-	if bytes.is_empty():
-		return null
-	var stream := AudioStreamMP3.new()
-	stream.data = bytes
-	stream.loop = loop
-	return stream
+func _load_mp3(path: String, loop := false) -> AudioStream:
+	# Exported builds pack imported .mp3str files, not the original MP3 bytes.
+	# FileAccess on res://assets/...mp3 works in the editor (project folder)
+	# and fails in a release PCK, which used to drop every cue back to synth.
+	if ResourceLoader.exists(path):
+		var loaded := ResourceLoader.load(path)
+		if loaded is AudioStreamMP3:
+			var mp3: AudioStreamMP3 = (loaded as AudioStreamMP3).duplicate()
+			mp3.loop = loop
+			return mp3
+		if loaded is AudioStream:
+			return loaded
+	if FileAccess.file_exists(path):
+		var bytes := FileAccess.get_file_as_bytes(path)
+		if not bytes.is_empty():
+			var raw := AudioStreamMP3.new()
+			raw.data = bytes
+			raw.loop = loop
+			return raw
+	return null
 
 func _generate_all_sounds() -> void:
 	var loaded := 0
