@@ -607,141 +607,174 @@ func _build_ui() -> void:
 	intro.tween_property(title_lock, "position:x", title_lock.position.x + 20.0, 0.4).set_delay(0.1).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	intro.tween_property(_main_box, "modulate:a", 1.0, 0.35).set_delay(0.05)
 
-func _build_controls_panel(root: Control) -> PanelContainer:
+func _make_modal_panel(root: Control, width: float) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.z_index = 2
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.anchor_left = 0.5
-	panel.anchor_right = 0.5
-	panel.anchor_top = 0.5
-	panel.anchor_bottom = 0.5
-	panel.offset_left = -270.0
-	panel.offset_right = 270.0
-	panel.offset_top = -200.0
-	panel.offset_bottom = 200.0
 	panel.visible = false
+	panel.clip_contents = false
+	panel.set_anchors_preset(Control.PRESET_CENTER)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	panel.custom_minimum_size = Vector2(width, 0)
 	root.add_child(panel)
-	MENU_STYLE.decorate(panel, Vector2(34, 28))
-
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 8)
-	panel.add_child(box)
-	box.add_child(MENU_STYLE.eyebrow("VANGUARD OS // FIELD MANUAL"))
-	box.add_child(_make_title("CONTROLS", 27, Color(0.9, 0.96, 1)))
-	box.add_child(MENU_STYLE.separator())
-
-	var rows := [
-		["A / D  ·  ← / →", "Run"],
-		["SPACE  ·  W  ·  ↑", "Jump / Thruster double jump"],
-		["SHIFT  ·  RMB", "Evasive dash (invulnerable)"],
-		["MOUSE", "360° weapon aiming"],
-		["LMB  ·  J", "Fire"],
-		["1 – 4  ·  WHEEL", "Weapon slots / cycling"],
-		["E  ·  Q", "EMP grenade"],
-		["ESC  ·  P", "Tactical pause"],
-		["F", "Activate terminal / relay"],
-	]
-	for row in rows:
-		var hbox := HBoxContainer.new()
-		hbox.add_theme_constant_override("separation", 18)
-		var keys := _make_title(row[0], 13, MENU_STYLE.CYAN)
-		keys.add_theme_font_override("font", MENU_STYLE.MONO)
-		keys.custom_minimum_size = Vector2(190, 0)
-		keys.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		var action := _make_title(row[1], 15, Color(0.6, 0.7, 0.85))
-		action.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		action.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		hbox.add_child(keys)
-		hbox.add_child(action)
-		box.add_child(hbox)
-
-	var back := _make_button("BACK", Vector2(160, 40))
-	back.pressed.connect(func(): _show_panel(null))
-	var center := HBoxContainer.new()
-	center.alignment = BoxContainer.ALIGNMENT_CENTER
-	center.add_child(back)
-	box.add_child(center)
+	MENU_STYLE.decorate(panel, Vector2(42, 36))
 	return panel
 
-func _build_settings_panel(root: Control) -> PanelContainer:
-	var panel := PanelContainer.new()
-	panel.z_index = 2
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.anchor_left = 0.5
-	panel.anchor_right = 0.5
-	panel.anchor_top = 0.5
-	panel.anchor_bottom = 0.5
-	panel.offset_left = -270.0
-	panel.offset_right = 270.0
-	panel.offset_top = -170.0
-	panel.offset_bottom = 170.0
-	panel.visible = false
-	root.add_child(panel)
-	MENU_STYLE.decorate(panel, Vector2(34, 28))
-
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 10)
-	panel.add_child(box)
-	box.add_child(MENU_STYLE.eyebrow("VANGUARD OS // SYSTEMS CONFIG"))
-	box.add_child(_make_title("SUIT SETTINGS", 27, Color(0.9, 0.96, 1)))
+func _modal_header(box: VBoxContainer, eyebrow: String, title: String) -> void:
+	box.add_child(MENU_STYLE.eyebrow(eyebrow))
+	var heading := _make_title(title, 26, Color(0.92, 0.97, 1.0))
+	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	box.add_child(heading)
 	box.add_child(MENU_STYLE.separator())
 
-	_add_slider(box, "MASTER VOLUME", "master", GameManager.settings_master_volume)
-	_add_slider(box, "MUSIC VOLUME", "music", GameManager.settings_music_volume)
-	_add_slider(box, "SFX VOLUME", "sfx", GameManager.settings_sfx_volume)
-	_add_slider(box, "SCREEN SHAKE", "shake", GameManager.settings_shake_scale)
+func _modal_back(box: VBoxContainer) -> void:
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(0, 8)
+	box.add_child(spacer)
+	var back := _make_button("BACK", Vector2(0, 44))
+	back.pressed.connect(func(): _show_panel(null))
+	box.add_child(back)
 
-	var fs := Button.new()
-	fs.toggle_mode = true
-	fs.custom_minimum_size.y = 36
-	MENU_STYLE.button(fs)
-	fs.text = "DISPLAY MODE // FULLSCREEN" if GameManager.settings_fullscreen else "DISPLAY MODE // WINDOWED"
-	fs.button_pressed = GameManager.settings_fullscreen
-	fs.toggled.connect(func(on: bool):
-		fs.text = "DISPLAY MODE // FULLSCREEN" if on else "DISPLAY MODE // WINDOWED"
-		GameManager.update_setting("fullscreen", 1.0 if on else 0.0))
-	box.add_child(fs)
+func _build_controls_panel(root: Control) -> PanelContainer:
+	var panel := _make_modal_panel(root, 720)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 12)
+	panel.add_child(box)
+	_modal_header(box, "VANGUARD OS // FIELD MANUAL", "CONTROLS")
 
+	var columns := HBoxContainer.new()
+	columns.add_theme_constant_override("separation", 36)
+	columns.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.add_child(columns)
+
+	var left := VBoxContainer.new()
+	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left.add_theme_constant_override("separation", 10)
+	var right := VBoxContainer.new()
+	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right.add_theme_constant_override("separation", 10)
+	columns.add_child(left)
+	columns.add_child(right)
+
+	var left_rows := [
+		["A / D  ·  ← / →", "Run"],
+		["SPACE  ·  W  ·  ↑", "Jump / double jump"],
+		["SHIFT  ·  RMB", "Evasive dash"],
+		["MOUSE", "360° aim"],
+		["LMB  ·  J", "Fire"],
+	]
+	var right_rows := [
+		["1 – 4  ·  WHEEL", "Weapons"],
+		["E  ·  Q", "EMP grenade"],
+		["F", "Terminal / relay"],
+		["ESC  ·  P", "Pause"],
+	]
+	for row in left_rows:
+		left.add_child(_control_row(row[0], row[1]))
+	for row in right_rows:
+		right.add_child(_control_row(row[0], row[1]))
+
+	_modal_back(box)
+	return panel
+
+func _control_row(keys_text: String, action_text: String) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 14)
+	row.custom_minimum_size.y = 28
+	var keys := _make_title(keys_text, 12, MENU_STYLE.CYAN)
+	keys.add_theme_font_override("font", MENU_STYLE.MONO)
+	keys.custom_minimum_size = Vector2(168, 0)
+	keys.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	keys.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var action := _make_title(action_text, 14, Color(0.72, 0.82, 0.92))
+	action.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	action.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	action.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	row.add_child(keys)
+	row.add_child(action)
+	return row
+
+func _build_settings_panel(root: Control) -> PanelContainer:
+	var panel := _make_modal_panel(root, 720)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 14)
+	panel.add_child(box)
+	_modal_header(box, "VANGUARD OS // SYSTEMS CONFIG", "SUIT SETTINGS")
+
+	var columns := HBoxContainer.new()
+	columns.add_theme_constant_override("separation", 28)
+	columns.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.add_child(columns)
+
+	var audio := VBoxContainer.new()
+	audio.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	audio.add_theme_constant_override("separation", 12)
+	audio.add_child(MENU_STYLE.eyebrow("AUDIO / FEEL"))
+	_add_slider(audio, "MASTER", "master", GameManager.settings_master_volume)
+	_add_slider(audio, "MUSIC", "music", GameManager.settings_music_volume)
+	_add_slider(audio, "SFX", "sfx", GameManager.settings_sfx_volume)
+	_add_slider(audio, "SHAKE", "shake", GameManager.settings_shake_scale)
+	columns.add_child(audio)
+
+	var display := VBoxContainer.new()
+	display.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	display.add_theme_constant_override("separation", 10)
+	display.add_child(MENU_STYLE.eyebrow("DISPLAY"))
+	_add_toggle(display, "MODE", "FULLSCREEN" if GameManager.settings_fullscreen else "WINDOWED", GameManager.settings_fullscreen, func(on: bool, value_lbl: Label):
+		value_lbl.text = "FULLSCREEN" if on else "WINDOWED"
+		GameManager.update_setting("fullscreen", 1.0 if on else 0.0)
+	)
 	var world_env := get_node_or_null("WorldEnvironment") as WorldEnvironment
 	if world_env and world_env.environment:
 		var env := world_env.environment
-		var ssao_btn := Button.new()
-		ssao_btn.toggle_mode = true
-		ssao_btn.custom_minimum_size.y = 36
-		MENU_STYLE.button(ssao_btn)
-		ssao_btn.text = "SSAO AMBIENT OCCLUSION // ON" if env.ssao_enabled else "SSAO AMBIENT OCCLUSION // OFF"
-		ssao_btn.button_pressed = env.ssao_enabled
-		ssao_btn.toggled.connect(func(on: bool):
+		_add_toggle(display, "SSAO", "ON" if env.ssao_enabled else "OFF", env.ssao_enabled, func(on: bool, value_lbl: Label):
 			env.ssao_enabled = on
-			ssao_btn.text = "SSAO AMBIENT OCCLUSION // ON" if on else "SSAO AMBIENT OCCLUSION // OFF"
+			value_lbl.text = "ON" if on else "OFF"
 		)
-		box.add_child(ssao_btn)
-
-		var fog_btn := Button.new()
-		fog_btn.toggle_mode = true
-		fog_btn.custom_minimum_size.y = 36
-		MENU_STYLE.button(fog_btn)
-		fog_btn.text = "VOLUMETRIC ATMOSPHERE // ON" if env.volumetric_fog_enabled else "VOLUMETRIC ATMOSPHERE // OFF"
-		fog_btn.button_pressed = env.volumetric_fog_enabled
-		fog_btn.toggled.connect(func(on: bool):
+		_add_toggle(display, "ATMOSPHERE", "ON" if env.volumetric_fog_enabled else "OFF", env.volumetric_fog_enabled, func(on: bool, value_lbl: Label):
 			env.volumetric_fog_enabled = on
-			fog_btn.text = "VOLUMETRIC ATMOSPHERE // ON" if on else "VOLUMETRIC ATMOSPHERE // OFF"
+			value_lbl.text = "ON" if on else "OFF"
 		)
-		box.add_child(fog_btn)
+	columns.add_child(display)
 
-	var back := _make_button("BACK", Vector2(160, 40))
-	back.pressed.connect(func(): _show_panel(null))
-	var center := HBoxContainer.new()
-	center.alignment = BoxContainer.ALIGNMENT_CENTER
-	center.add_child(back)
-	box.add_child(center)
+	_modal_back(box)
 	return panel
+
+func _add_toggle(parent: Control, label_text: String, value_text: String, pressed: bool, on_toggle: Callable) -> void:
+	var btn := Button.new()
+	btn.toggle_mode = true
+	btn.button_pressed = pressed
+	btn.text = ""
+	btn.custom_minimum_size = Vector2(0, 42)
+	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	MENU_STYLE.button(btn)
+	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	row.offset_left = 14.0
+	row.offset_right = -14.0
+	row.add_theme_constant_override("separation", 12)
+	btn.add_child(row)
+	var name_lbl := _make_title(label_text, 13, Color(0.78, 0.88, 0.96))
+	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_lbl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	var value_lbl := _make_title(value_text, 12, MENU_STYLE.CYAN)
+	value_lbl.add_theme_font_override("font", MENU_STYLE.MONO)
+	value_lbl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	value_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	row.add_child(name_lbl)
+	row.add_child(value_lbl)
+	btn.toggled.connect(func(on: bool): on_toggle.call(on, value_lbl))
+	parent.add_child(btn)
 
 func _add_slider(parent: Control, label_text: String, key: String, value: float) -> void:
 	var hbox := HBoxContainer.new()
-	hbox.add_theme_constant_override("separation", 14)
-	var lbl := _make_title(label_text, 14, Color(0.7, 0.78, 0.9))
-	lbl.custom_minimum_size = Vector2(170, 0)
+	hbox.add_theme_constant_override("separation", 12)
+	hbox.custom_minimum_size.y = 32
+	var lbl := _make_title(label_text, 13, Color(0.72, 0.82, 0.92))
+	lbl.custom_minimum_size = Vector2(86, 0)
+	lbl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	hbox.add_child(lbl)
 	var slider := HSlider.new()
@@ -750,10 +783,12 @@ func _add_slider(parent: Control, label_text: String, key: String, value: float)
 	slider.step = 0.05
 	slider.value = value
 	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	slider.custom_minimum_size = Vector2(0, 24)
+	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	slider.custom_minimum_size = Vector2(120, 22)
 	MENU_STYLE.slider(slider)
 	var readout := MENU_STYLE.eyebrow("%03d%%" % roundi(value * 100))
-	readout.custom_minimum_size.x = 48
+	readout.custom_minimum_size.x = 46
+	readout.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	readout.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	slider.value_changed.connect(func(v: float):
 		readout.text = "%03d%%" % roundi(v * 100)
@@ -763,6 +798,7 @@ func _add_slider(parent: Control, label_text: String, key: String, value: float)
 	hbox.add_child(slider)
 	hbox.add_child(readout)
 	parent.add_child(hbox)
+
 
 func _show_panel(panel: PanelContainer) -> void:
 	if _transitioning:

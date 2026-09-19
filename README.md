@@ -18,6 +18,10 @@ A 2.5D side-scrolling space shooter built in **Godot 4.7 Forward+**. Drop onto a
 
 ![Apex Iron Vanguard boss fight](docs/screenshots/boss.png)
 
+![Suit settings](docs/screenshots/settings.png)
+
+![Controls](docs/screenshots/controls.png)
+
 ## Play
 
 Grab the latest build from **[Releases](https://github.com/ClaudiuJitea/space-ranger/releases/latest)**.
@@ -101,6 +105,8 @@ space-ranger/
 ├── docs/screenshots/
 └── project.godot
 ```
+
+Weapons, UI, movement, and combat use generated sound effects in `assets/audio/sfx/`, with looping music beds in `assets/audio/music/`.
 
 Export presets live in `export_presets.cfg` (Linux + Windows, x86_64, embedded PCK). Blender work files are not packed into the game builds.
 

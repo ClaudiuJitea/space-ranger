@@ -67,34 +67,98 @@ func apply_volumes(master: float, music: float, sfx: float) -> void:
 			AudioServer.set_bus_volume_db(idx, linear_to_db(maxf(pair[1], 0.0001)))
 			AudioServer.set_bus_mute(idx, pair[1] <= 0.001)
 
+const SFX_KEYS: Array[String] = [
+	"laser_pulse", "laser_spread", "laser_beam", "enemy_laser",
+	"explosion", "boss_explosion", "hit", "shield_hit",
+	"pickup_energy", "pickup_shield", "pickup_weapon",
+	"thruster", "dash", "alarm", "weapon_swap", "rocket_launch",
+	"hitmarker", "rocket_explode", "footstep", "landing", "landing_hard",
+	"ui_click", "ui_hover", "notify", "respawn", "lunge", "victory",
+	"powerup", "plasma_burst",
+]
+
+func _load_mp3(path: String, loop := false) -> AudioStreamMP3:
+	if not FileAccess.file_exists(path):
+		return null
+	var bytes := FileAccess.get_file_as_bytes(path)
+	if bytes.is_empty():
+		return null
+	var stream := AudioStreamMP3.new()
+	stream.data = bytes
+	stream.loop = loop
+	return stream
+
 func _generate_all_sounds() -> void:
-	_sounds["laser_pulse"] = _create_laser_sound(880.0, 220.0, 0.12, 0.6)
-	_sounds["laser_spread"] = _create_laser_sound(550.0, 110.0, 0.18, 0.7)
-	_sounds["laser_beam"] = _create_beam_sound(320.0, 0.35, 0.8)
-	_sounds["enemy_laser"] = _create_laser_sound(340.0, 120.0, 0.14, 0.5)
-	_sounds["explosion"] = _create_explosion_sound(0.45, 0.8)
-	_sounds["boss_explosion"] = _create_explosion_sound(0.9, 1.0)
-	_sounds["hit"] = _create_hit_sound(0.06, 0.4)
-	_sounds["shield_hit"] = _create_shield_ping(0.2, 0.6)
-	_sounds["pickup_energy"] = _create_chime_sound([523.25, 659.25, 783.99], 0.22, 0.6)
-	_sounds["pickup_shield"] = _create_chime_sound([440.0, 554.37, 659.25, 880.0], 0.3, 0.6)
-	_sounds["pickup_weapon"] = _create_chime_sound([330.0, 440.0, 554.37, 659.25, 987.77], 0.4, 0.7)
-	_sounds["thruster"] = _create_noise_whoosh(0.18, 0.4)
-	_sounds["dash"] = _create_laser_sound(900.0, 400.0, 0.2, 0.5)
-	_sounds["alarm"] = _create_chime_sound([440.0, 330.0], 0.3, 0.5)
-	_sounds["weapon_swap"] = _create_click_sound(0.08, 0.5)
-	_sounds["rocket_launch"] = _create_rocket_sound(0.5, 0.8)
-	_sounds["hitmarker"] = _create_chime_sound([1300.0, 1750.0], 0.07, 0.35)
-	_sounds["rocket_explode"] = _create_explosion_sound(0.7, 1.0)
-	_sounds["footstep"] = _create_noise_whoosh(0.09, 0.22)
-	_sounds["landing"] = _create_noise_whoosh(0.14, 0.4)
-	_sounds["landing_hard"] = _create_explosion_sound(0.22, 0.5)
-	_sounds["ui_click"] = _create_click_sound(0.06, 0.45)
-	_sounds["ui_hover"] = _create_chime_sound([880.0], 0.05, 0.18)
-	_sounds["notify"] = _create_chime_sound([740.0, 1108.0], 0.14, 0.4)
-	_sounds["respawn"] = _create_noise_whoosh(0.35, 0.5)
-	_sounds["lunge"] = _create_laser_sound(180.0, 60.0, 0.22, 0.6)
-	_sounds["victory"] = _create_chime_sound([523.25, 659.25, 783.99, 1046.5, 1318.5], 0.85, 0.65)
+	var loaded := 0
+	for key in SFX_KEYS:
+		var recorded := _load_mp3("res://assets/audio/sfx/%s.mp3" % key)
+		if recorded:
+			_sounds[key] = recorded
+			loaded += 1
+			continue
+		_sounds[key] = _synth_fallback(key)
+	print("SoundManager: %d/%d ElevenLabs SFX loaded" % [loaded, SFX_KEYS.size()])
+
+func _synth_fallback(key: String) -> AudioStreamWAV:
+	match key:
+		"laser_pulse":
+			return _create_laser_sound(880.0, 220.0, 0.12, 0.6)
+		"laser_spread":
+			return _create_laser_sound(550.0, 110.0, 0.18, 0.7)
+		"laser_beam":
+			return _create_beam_sound(320.0, 0.35, 0.8)
+		"enemy_laser":
+			return _create_laser_sound(340.0, 120.0, 0.14, 0.5)
+		"explosion":
+			return _create_explosion_sound(0.45, 0.8)
+		"boss_explosion":
+			return _create_explosion_sound(0.9, 1.0)
+		"hit":
+			return _create_hit_sound(0.06, 0.4)
+		"shield_hit":
+			return _create_shield_ping(0.2, 0.6)
+		"pickup_energy":
+			return _create_chime_sound([523.25, 659.25, 783.99], 0.22, 0.6)
+		"pickup_shield":
+			return _create_chime_sound([440.0, 554.37, 659.25, 880.0], 0.3, 0.6)
+		"pickup_weapon":
+			return _create_chime_sound([330.0, 440.0, 554.37, 659.25, 987.77], 0.4, 0.7)
+		"thruster":
+			return _create_noise_whoosh(0.18, 0.4)
+		"dash":
+			return _create_laser_sound(900.0, 400.0, 0.2, 0.5)
+		"alarm":
+			return _create_chime_sound([440.0, 330.0], 0.3, 0.5)
+		"weapon_swap":
+			return _create_click_sound(0.08, 0.5)
+		"rocket_launch":
+			return _create_rocket_sound(0.5, 0.8)
+		"hitmarker":
+			return _create_chime_sound([1300.0, 1750.0], 0.07, 0.35)
+		"rocket_explode":
+			return _create_explosion_sound(0.7, 1.0)
+		"footstep":
+			return _create_noise_whoosh(0.09, 0.22)
+		"landing":
+			return _create_noise_whoosh(0.14, 0.4)
+		"landing_hard":
+			return _create_explosion_sound(0.22, 0.5)
+		"ui_click":
+			return _create_click_sound(0.06, 0.45)
+		"ui_hover":
+			return _create_chime_sound([880.0], 0.05, 0.18)
+		"notify":
+			return _create_chime_sound([740.0, 1108.0], 0.14, 0.4)
+		"respawn":
+			return _create_noise_whoosh(0.35, 0.5)
+		"lunge":
+			return _create_laser_sound(180.0, 60.0, 0.22, 0.6)
+		"victory":
+			return _create_chime_sound([523.25, 659.25, 783.99, 1046.5, 1318.5], 0.85, 0.65)
+		"powerup":
+			return _create_chime_sound([392.0, 523.25, 659.25, 784.0], 0.32, 0.6)
+		_:
+			return _create_laser_sound(420.0, 90.0, 0.22, 0.7)
 
 func play(sound_name: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
 	if not _sounds.has(sound_name):
@@ -105,7 +169,7 @@ func play(sound_name: String, pitch_scale: float = 1.0, volume_db: float = 0.0) 
 	if _last_played.has(sound_name) and now - int(_last_played[sound_name]) < 30:
 		return
 	_last_played[sound_name] = now
-	var stream: AudioStreamWAV = _sounds[sound_name]
+	var stream: AudioStream = _sounds[sound_name]
 	for player in audio_players:
 		if not player.playing:
 			player.stream = stream
@@ -323,17 +387,27 @@ func _make_loop_stream(samples: PackedFloat32Array) -> AudioStreamWAV:
 func _generate_music_layers() -> void:
 	if not _music.is_empty():
 		return
-	var L := int(MUSIC_LOOP_SEC * MUSIC_RATE)
-	var pad := _render_pad(L)
-	var pulse := _render_pulse(L)
-	var tension := _render_tension(L)
-
-	var streams := {"pad": pad, "pulse": pulse, "tension": tension}
+	var files := {"pad": "music_pad", "pulse": "music_pulse", "tension": "music_tension"}
+	var need_synth := false
+	var recorded: Dictionary = {}
+	for layer in music_players:
+		var stream := _load_mp3("res://assets/audio/music/%s.mp3" % files[layer], true)
+		if stream:
+			recorded[layer] = stream
+		else:
+			need_synth = true
+	var synth := {}
+	if need_synth:
+		var L := int(MUSIC_LOOP_SEC * MUSIC_RATE)
+		synth = {"pad": _render_pad(L), "pulse": _render_pulse(L), "tension": _render_tension(L)}
 	for layer in music_players:
 		var p := AudioStreamPlayer.new()
 		p.name = "Music_%s" % layer
 		p.bus = "Music"
-		p.stream = _make_loop_stream(streams[layer])
+		if recorded.has(layer):
+			p.stream = recorded[layer]
+		else:
+			p.stream = _make_loop_stream(synth[layer])
 		p.volume_db = -60.0
 		add_child(p)
 		p.play()

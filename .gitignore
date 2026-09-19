@@ -5,3 +5,5 @@
 !/dist/.gdignore
 .codex/
 *.blend1
+.env
+.env.*
