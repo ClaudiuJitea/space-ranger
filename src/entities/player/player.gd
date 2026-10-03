@@ -51,10 +51,10 @@ var weapon_scenes: Array[PackedScene] = [
 ]
 var proj_spread: PackedScene = preload("res://src/projectiles/spread_projectile.tscn")
 var weapon_model_scenes: Array[PackedScene] = [
-	preload("res://assets/models/weapon_blaster.glb"),
-	preload("res://assets/models/weapon_scattergun.glb"),
-	preload("res://assets/models/weapon_railgun.glb"),
-	preload("res://assets/models/weapon_launcher.glb"),
+	preload("res://assets/models/arsenal_refit/blaster.glb"),
+	preload("res://assets/models/arsenal_refit/scattergun.glb"),
+	preload("res://assets/models/arsenal_refit/railgun.glb"),
+	preload("res://assets/models/arsenal_refit/launcher.glb"),
 ]
 
 @onready var visual_root: Node3D = $VisualRoot
@@ -572,7 +572,7 @@ func _shoot() -> void:
 			get_parent().add_child(p)
 			p.global_position = spawn_pos
 			p.init_projectile(aim_direction, 38.0, 26.0, flash_color, false, false)
-			SoundManager.play("laser_pulse", 1.0 + randf_range(-0.05, 0.05), -2.0)
+			SoundManager.play("px9_fire", 1.0 + randf_range(-0.05, 0.05), -2.0)
 			FXManager.shake(0.08, 0.06)
 
 		1:
@@ -588,7 +588,7 @@ func _shoot() -> void:
 			velocity.x -= aim_direction.x * 5.5
 			if not is_on_floor():
 				velocity.y -= aim_direction.y * 3.0
-			SoundManager.play("laser_spread", 0.85, 0.0)
+			SoundManager.play("titan_fire", 0.85, 0.0)
 			FXManager.shake(0.28, 0.14)
 
 		2:
@@ -596,7 +596,7 @@ func _shoot() -> void:
 			get_parent().add_child(p)
 			p.global_position = spawn_pos
 			p.init_projectile(aim_direction, 58.0, 85.0, flash_color, false, true)
-			SoundManager.play("laser_beam", 0.95, 2.0)
+			SoundManager.play("lr77_fire", 0.95, 2.0)
 			FXManager.shake(0.5, 0.24)
 
 		3:
@@ -611,12 +611,12 @@ func _shoot() -> void:
 				p.set_target(lock)
 			p.init_projectile(launch_direction, 30.0, 85.0, flash_color, false, false)
 			velocity.x -= aim_direction.x * 2.5
-			SoundManager.play("rocket_launch", 1.0 + randf_range(-0.05, 0.05), 0.0)
+			SoundManager.play("havoc_fire", 1.0 + randf_range(-0.05, 0.05), 0.0)
 			FXManager.shake(0.35, 0.18)
 
 func _launch_secondary_emp() -> void:
 	secondary_cooldown = SECONDARY_MAX_COOLDOWN
-	SoundManager.play("dash", 0.8, 2.0)
+	SoundManager.play("emp_discharge", 0.8, -2.0)
 	FXManager.shake(0.3, 0.18)
 	FXManager.spawn_emp_burst(global_position + aim_direction * 0.8, 2.0)
 
@@ -641,7 +641,7 @@ func _launch_secondary_emp() -> void:
 			r_dir = (lock_point - rocket.global_position).normalized()
 			rocket.set_target(lock)
 		rocket.init_projectile(r_dir, 26.0, 75.0, Color(1.0, 0.6, 0.15), false, false)
-	SoundManager.play("rocket_launch", 1.25, 2.0)
+	SoundManager.play("havoc_fire", 1.25, 2.0)
 
 ## Landing feedback scaled by impact speed — readable, never punishing.
 func _on_landed(fall_speed: float) -> void:

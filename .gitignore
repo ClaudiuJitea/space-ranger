@@ -7,3 +7,7 @@
 *.blend1
 .env
 .env.*
+
+# Python tooling caches
+__pycache__/
+*.pyc

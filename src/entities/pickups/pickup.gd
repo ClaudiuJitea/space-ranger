@@ -51,9 +51,9 @@ func _setup_visual() -> void:
 
 func _weapon_model_scene() -> PackedScene:
 	match weapon_to_unlock:
-		1: return preload("res://assets/models/weapon_scattergun.glb")
-		2: return preload("res://assets/models/weapon_railgun.glb")
-		3: return preload("res://assets/models/weapon_launcher.glb")
+		1: return preload("res://assets/models/arsenal_refit/scattergun.glb")
+		2: return preload("res://assets/models/arsenal_refit/railgun.glb")
+		3: return preload("res://assets/models/arsenal_refit/launcher.glb")
 	return null
 
 func _process(delta: float) -> void:

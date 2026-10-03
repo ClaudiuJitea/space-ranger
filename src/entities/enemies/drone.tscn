@@ -1,11 +1,11 @@
 [gd_scene load_steps=7 format=3 uid="uid://c8m2d4r5o7n1"]
 
 [ext_resource type="Script" path="res://src/entities/enemies/drone.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://assets/models/enemy_enforcer.glb" id="2_mesh"]
+[ext_resource type="PackedScene" path="res://assets/models/arsenal_refit/scout.glb" id="2_mesh"]
 [ext_resource type="Script" path="res://src/entities/enemies/enemy_visual_animator.gd" id="3_anim"]
-[ext_resource type="PackedScene" path="res://assets/models/nightguard_detail/nightguard_rifle.glb" id="4_weapon"]
-[ext_resource type="PackedScene" path="res://assets/models/enemy_scout_jetpack.glb" id="5_jetpack"]
-[ext_resource type="PackedScene" path="res://assets/models/enemy_scout_jet_flame.glb" id="6_flame"]
+[ext_resource type="PackedScene" path="res://assets/models/arsenal_refit/enemy_rifle.glb" id="4_weapon"]
+[ext_resource type="PackedScene" path="res://assets/models/arsenal_refit/scout_jetpack.glb" id="5_jetpack"]
+[ext_resource type="PackedScene" path="res://assets/models/arsenal_refit/scout_flame.glb" id="6_flame"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
 radius = 0.34
@@ -45,7 +45,7 @@ airborne_leg_lock = true
 
 [node name="EyeLight" type="OmniLight3D" parent="Visual"]
 position = Vector3(0, 1.13, 0.24)
-light_color = Color(0.62, 0.78, 0.76, 1)
+light_color = Color(0.08, 0.7, 1, 1)
 light_energy = 0.18
 omni_range = 1.6
 

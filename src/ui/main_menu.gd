@@ -120,7 +120,7 @@ func _mount_hero_ranger() -> void:
 		if nm.begins_with("vanguard") or nm.begins_with("mixamorig") or nm == "Ranger_Blaster_Rifle" or nm == "Character":
 			node.visible = false
 
-	var hero: Node3D = (load("res://assets/models/player.glb") as PackedScene).instantiate()
+	var hero: Node3D = (load("res://assets/models/eclipse_expansion/ranger.glb") as PackedScene).instantiate()
 	hero.name = "MenuRanger"
 	dock.add_child(hero)
 	# Dais is at Blender (0.55, 0.35, 0.12) → glTF Y-up (0.55, 0.12, -0.35)
@@ -173,7 +173,7 @@ func _put_blaster_in_hand(hero: Node3D) -> void:
 	var holder := Node3D.new()
 	holder.name = "MenuPX9"
 	hero.add_child(holder)
-	var gun: Node3D = preload("res://assets/models/weapon_blaster.glb").instantiate()
+	var gun: Node3D = preload("res://assets/models/arsenal_refit/blaster.glb").instantiate()
 	gun.name = "Weapon_0"
 	holder.add_child(gun)
 	var solver := WeaponAimSolver.new()
@@ -206,7 +206,7 @@ func _dress_command_deck() -> void:
 	# Distant gunship as a small silhouette off the planet limb — never over the title.
 	_deck_gunship = _place_prop(
 		dock,
-		"res://assets/models/concept_enemies_v2/gunship.glb",
+		"res://assets/models/arsenal_refit/gunship.glb",
 		Vector3(6.4, 3.4, -15.5),
 		Vector3(0.18, -PI * 0.62, 0.08),
 		1.35

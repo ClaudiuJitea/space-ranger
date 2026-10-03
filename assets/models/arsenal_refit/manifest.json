@@ -1,0 +1,97 @@
+{
+  "enforcer": {
+    "source": "res://assets/models/enemy_enforcer.glb",
+    "model": "res://assets/models/arsenal_refit/enforcer.glb",
+    "category": "humanoid"
+  },
+  "scout": {
+    "source": "res://assets/models/enemy_enforcer.glb",
+    "model": "res://assets/models/arsenal_refit/scout.glb",
+    "category": "humanoid"
+  },
+  "scout_jetpack": {
+    "source": "res://assets/models/enemy_scout_jetpack.glb",
+    "model": "res://assets/models/arsenal_refit/scout_jetpack.glb",
+    "category": "attachment"
+  },
+  "scout_flame": {
+    "source": "res://assets/models/enemy_scout_jet_flame.glb",
+    "model": "res://assets/models/arsenal_refit/scout_flame.glb",
+    "category": "flame"
+  },
+  "crawler": {
+    "source": "res://assets/models/concept_enemies_v2/crawler.glb",
+    "model": "res://assets/models/arsenal_refit/crawler.glb",
+    "category": "mech"
+  },
+  "turret": {
+    "source": "res://assets/models/concept_enemies_v2/turret.glb",
+    "model": "res://assets/models/arsenal_refit/turret.glb",
+    "category": "mech"
+  },
+  "gunship": {
+    "source": "res://assets/models/concept_enemies_v2/gunship.glb",
+    "model": "res://assets/models/arsenal_refit/gunship.glb",
+    "category": "mech"
+  },
+  "hound": {
+    "source": "res://assets/models/arsenal_refit/rift_hound_atelier.blend",
+    "model": "res://assets/models/arsenal_refit/hound.glb",
+    "category": "mech"
+  },
+  "wasp": {
+    "source": "res://assets/models/eclipse_expansion/wasp.glb",
+    "model": "res://assets/models/arsenal_refit/wasp.glb",
+    "category": "mech"
+  },
+  "apex": {
+    "source": "res://assets/models/eclipse_expansion/apex.glb",
+    "model": "res://assets/models/arsenal_refit/apex.glb",
+    "category": "boss"
+  },
+  "warden": {
+    "source": "res://assets/models/eclipse_expansion/warden.glb",
+    "model": "res://assets/models/arsenal_refit/warden.glb",
+    "category": "boss"
+  },
+  "seraph": {
+    "source": "res://assets/models/eclipse_expansion/seraph.glb",
+    "model": "res://assets/models/arsenal_refit/seraph.glb",
+    "category": "boss"
+  },
+  "leviathan": {
+    "source": "res://assets/models/eclipse_expansion/leviathan.glb",
+    "model": "res://assets/models/arsenal_refit/leviathan.glb",
+    "category": "boss"
+  },
+  "sovereign": {
+    "source": "res://assets/models/eclipse_expansion/sovereign.glb",
+    "model": "res://assets/models/arsenal_refit/sovereign.glb",
+    "category": "boss"
+  },
+  "blaster": {
+    "source": "res://assets/models/weapon_blaster.glb",
+    "model": "res://assets/models/arsenal_refit/blaster.glb",
+    "category": "weapon"
+  },
+  "scattergun": {
+    "source": "res://assets/models/weapon_scattergun.glb",
+    "model": "res://assets/models/arsenal_refit/scattergun.glb",
+    "category": "weapon"
+  },
+  "railgun": {
+    "source": "res://assets/models/weapon_railgun.glb",
+    "model": "res://assets/models/arsenal_refit/railgun.glb",
+    "category": "weapon"
+  },
+  "launcher": {
+    "source": "res://assets/models/weapon_launcher.glb",
+    "model": "res://assets/models/arsenal_refit/launcher.glb",
+    "category": "weapon"
+  },
+  "enemy_rifle": {
+    "source": "res://assets/models/nightguard_detail/nightguard_rifle.glb",
+    "model": "res://assets/models/arsenal_refit/enemy_rifle.glb",
+    "category": "weapon"
+  }
+}

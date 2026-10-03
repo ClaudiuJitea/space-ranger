@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://daw3x7v2k5m8q"]
 
 [ext_resource type="Script" path="res://src/entities/enemies/crawler.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://assets/models/concept_enemies_v2/crawler.glb" id="2_mesh"]
+[ext_resource type="PackedScene" path="res://assets/models/arsenal_refit/crawler.glb" id="2_mesh"]
 [ext_resource type="Script" path="res://src/entities/enemies/reference_enemy_visuals.gd" id="3_anim"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]

@@ -1,16 +1,16 @@
 extends CharacterBody3D
 
-## Three Blender-authored bosses with distinct, telegraphed three-phase encounters.
-const MODELS := [preload("res://assets/models/campaign_bosses/apex.glb"), preload("res://assets/models/campaign_bosses/warden.glb"), preload("res://assets/models/campaign_bosses/seraph.glb")]
-const TITLES := ["APEX IRON VANGUARD", "RIFT ALPHA MATRIARCH", "EMBERFALL SERAPH"]
-const TINTS := [Color(1, 0.42, 0.08), Color(1, 0.08, 0.025), Color(1, 0.2, 0.08)]
+## Five Blender-authored bosses with distinct, telegraphed three-phase encounters.
+const MODELS := [preload("res://assets/models/arsenal_refit/apex.glb"), preload("res://assets/models/arsenal_refit/warden.glb"), preload("res://assets/models/arsenal_refit/seraph.glb"), preload("res://assets/models/arsenal_refit/leviathan.glb"), preload("res://assets/models/arsenal_refit/sovereign.glb")]
+const TITLES := ["APEX IRON VANGUARD", "RIFT ALPHA MATRIARCH", "EMBERFALL SERAPH", "CRYO LEVIATHAN", "ECLIPSE SOVEREIGN"]
+const TINTS := [Color(1, 0.42, 0.08), Color(1, 0.08, 0.025), Color(1, 0.2, 0.08), Color(0.1, 1, 0.7), Color(0.72, 0.2, 1)]
 const PROJECTILE := preload("res://src/projectiles/enemy_projectile.tscn")
 const DRONE := preload("res://src/entities/enemies/drone.tscn")
 const TURRET := preload("res://src/entities/enemies/turret.tscn")
 const CRAWLER := preload("res://src/entities/enemies/crawler.tscn")
 const ENFORCER := preload("res://src/entities/enemies/enforcer.tscn")
 const HOMING_MISSILE := preload("res://src/projectiles/boss_homing_missile.tscn")
-@export_range(0, 2) var boss_profile := 0
+@export_range(0, 4) var boss_profile := 0
 @export var max_health := 3500.0
 var health := 3500.0
 var phase := 1
@@ -27,6 +27,7 @@ var _exposed := 0.0
 var _targets: Array[float] = []
 var _markers: Array[Node3D] = []
 var _muzzles: Array[Node3D] = []
+var _siege_wings: Array[Node3D] = []
 var _rotor: Node3D
 var _colossus: Node3D
 var _charge_time := 0.0
@@ -61,9 +62,13 @@ func _ready() -> void:
 	var core := model.find_child("CoreSocket*", true, false) as Node3D
 	if core:
 		core_light.global_position = core.global_position
-	_rotor = model.find_child("ReactorRotor", true, false) as Node3D
+	_rotor = model.find_child("ReactorRotor*", true, false) as Node3D
+	if boss_profile == 3:
+		for side in [-1, 1]:
+			var wing := model.find_child("SiegeWing%s*" % side, true, false) as Node3D
+			if wing: _siege_wings.append(wing)
 	var shape := BoxShape3D.new()
-	shape.size = [Vector3(4.3, 4.8, 1.6), Vector3(4.8, 4.2, 1.4), Vector3(5.8, 3.3, 1.3)][boss_profile]
+	shape.size = [Vector3(4.3, 4.8, 1.6), Vector3(4.8, 4.2, 1.4), Vector3(5.8, 3.3, 1.3), Vector3(6.3, 2.9, 1.6), Vector3(5.6, 5.2, 1.6)][boss_profile]
 	if boss_profile == 0:
 		var capsule := CapsuleShape3D.new()
 		capsule.radius = 0.72
@@ -154,11 +159,13 @@ func _physics_process(delta: float) -> void:
 	elif boss_profile == 1:
 		_step_colossus(delta)
 	else:
-		var sway: float = [1.4, 2.7, 3.8][boss_profile]
-		var altitude: float = [0.2, 0.65, 0.40][boss_profile]
+		var sway: float = [1.4, 2.7, 3.8, 4.2, 2.2][boss_profile]
+		var altitude: float = [0.2, 0.65, 0.40, 0.7, 0.5][boss_profile]
 		var target := home_position + Vector3(sin(_age * 0.65) * sway, sin(_age * 1.1) * altitude, 0)
 		global_position = global_position.lerp(target, minf(1, delta * 2))
 		global_position.z = 0
+	for i in _siege_wings.size():
+		_siege_wings[i].rotation.z = sin(_age * 1.7) * 0.12 * (-1 if i == 0 else 1)
 	if _rotor:
 		_rotor.rotation.z += delta * (0.4 + phase * 0.2)
 
@@ -314,8 +321,12 @@ func _telegraph() -> void:
 		_warning.text = names_vanguard[attack_state]
 	elif boss_profile == 1:
 		_warning.text = names_colossus[attack_state]
-	else:
+	elif boss_profile == 2:
 		_warning.text = names_seraph[attack_state]
+	elif boss_profile == 3:
+		_warning.text = ["CRYO LANCES // WEAVE", "DECK FREEZE // JUMP", "SIEGE MISSILES // DASH", "WASP DEPLOYMENT // INTERCEPT"][attack_state]
+	else:
+		_warning.text = ["ORBITAL SPIRAL // FIND A GAP", "ECLIPSE CROSSFIRE // DASH", "SINGULARITY MISSILES // EVADE", "CERBERUS GUARD // KEEP MOVING"][attack_state]
 
 	SoundManager.play("alarm", 1.15, -9)
 	if boss_profile == 0 and attack_state == 1:
@@ -327,6 +338,9 @@ func _telegraph() -> void:
 
 func _execute_attack() -> void:
 	if not is_instance_valid(player_ref) or is_dead:
+		return
+	if boss_profile >= 3:
+		_expansion_attack()
 		return
 	if boss_profile == 1:
 		_colossus_attack()
@@ -353,7 +367,7 @@ func _execute_attack() -> void:
 			4:
 				_tactical_reinforcements()
 				_exposed = 1.4
-		SoundManager.play("enemy_laser", 0.75, -3)
+		SoundManager.play("boss_cannon", 0.75, -3)
 		FXManager.shake(0.16, 0.14)
 		return
 
@@ -702,3 +716,45 @@ func _spawn_armor_debris() -> void:
 		var tween := debris.create_tween()
 		tween.tween_interval(5)
 		tween.tween_callback(debris.queue_free)
+
+func _expansion_attack() -> void:
+	var heading := (player_ref.global_position + Vector3.UP - global_position).normalized()
+	heading.z = 0
+	if boss_profile == 3:
+		match attack_state:
+			0: _fan(heading, 4 + phase, 0.85, 12 + phase)
+			1:
+				# Clearly announced floor skim: both lanes leave room for a jump.
+				for side in [-1, 1]:
+					for height in [0.45, 0.95]:
+						_bolt(Vector3(global_position.x, 0.0 + height, 0), Vector3(side, 0, 0), 10, 14)
+			2: _fire_seraph_missiles(2 + phase)
+			3: _deploy_expansion_support(false)
+	else:
+		match attack_state:
+			0:
+				# Spokes have generous angular gaps; each phase rotates the pattern.
+				for i in range(7 + phase):
+					var angle := TAU * float(i) / float(7 + phase) + phase * 0.17
+					_bolt(global_position, Vector3(cos(angle), sin(angle), 0), 8 + phase, 13)
+			1:
+				for socket in _muzzles:
+					var direction := (player_ref.global_position + Vector3.UP - socket.global_position).normalized()
+					for angle in [-0.22, 0.0, 0.22]:
+						_bolt(socket.global_position, direction.rotated(Vector3.BACK, angle), 12, 12)
+			2: _fire_seraph_missiles(3 + phase)
+			3: _deploy_expansion_support(true)
+	_exposed = 1.8
+	SoundManager.play("boss_cryo" if boss_profile == 3 else "boss_void", 0.8, -6)
+	FXManager.shake(0.18, 0.12)
+
+func _deploy_expansion_support(ground: bool) -> void:
+	var alive := 0
+	for support in get_tree().get_nodes_in_group("boss_support"):
+		if is_instance_valid(support): alive += 1
+	if alive >= 2: return
+	var scene: PackedScene = preload("res://src/entities/enemies/armed_hound.tscn") if ground else preload("res://src/entities/enemies/interceptor.tscn")
+	var support := scene.instantiate() as Node3D
+	support.position = Vector3(home_position.x - 6, 0.2 if ground else home_position.y + 1, 0)
+	support.add_to_group("boss_support")
+	get_parent().add_child(support)

@@ -110,7 +110,10 @@ func _find_skeleton(root: Node) -> Skeleton3D:
 
 func _find_muzzle(root: Node) -> Node3D:
 	for child in root.get_children():
-		if child is Node3D and child.name.to_lower() == "muzzle":
+		# Blender suffixes duplicate socket names in the multi-asset workbench;
+		# Godot sanitizes those suffixes to underscores. Ignore mesh muzzle parts.
+		var name_text := String(child.name).to_lower()
+		if child is Node3D and not child is MeshInstance3D and (name_text == "muzzle" or name_text.begins_with("muzzle_")):
 			return child as Node3D
 		var found := _find_muzzle(child)
 		if found:

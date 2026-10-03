@@ -6,7 +6,7 @@ func frames(count: int) -> void:
 func _ready() -> void:
 	run.call_deferred()
 func run() -> void:
-	for index in range(1, 4):
+	for index in range(1, 6):
 		GameManager.reset_game()
 		var level: Node3D = load("res://src/levels/level_%02d.tscn" % index).instantiate()
 		add_child(level)

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://be4l1p8y3r5x"]
 
 [ext_resource type="Script" path="res://src/entities/player/player.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://assets/models/player.glb" id="2_mesh"]
+[ext_resource type="PackedScene" path="res://assets/models/eclipse_expansion/ranger.glb" id="2_mesh"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
 radius = 0.42

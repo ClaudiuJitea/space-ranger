@@ -49,7 +49,7 @@ func run() -> void:
 	boss._bolt(boss._muzzles[0].global_position, Vector3.LEFT, 20, 17)
 	check(boss._vanguard.recoil > 0, "Gun shots must impart articulated recoil")
 	var grounded_y := boss.position.y
-	boss.attack_state = 2
+	boss.attack_state = 3
 	boss._execute_attack()
 	check(boss.velocity.y > 10 and boss._stomp_pending, "Thruster stomp must launch via physics velocity")
 	await frames(12)

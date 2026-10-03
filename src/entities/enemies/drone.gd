@@ -115,9 +115,9 @@ func _fire_at_player(dir: Vector3) -> void:
 	var p = proj_scene.instantiate()
 	get_parent().add_child(p)
 	p.global_position = spawn_pos
-	p.init_projectile(dir, 16.0, 15.0, Color(0.78, 0.84, 0.77), true, false)
-	FXManager.spawn_muzzle_flash(spawn_pos, dir, Color(0.78, 0.84, 0.77))
-	SoundManager.play("enemy_laser", 1.1, -3.0)
+	p.init_projectile(dir, 16.0, 15.0, Color(0.08, 0.7, 1), true, false)
+	FXManager.spawn_muzzle_flash(spawn_pos, dir, Color(0.08, 0.7, 1))
+	SoundManager.play("scout_fire", 1.1, -3.0)
 
 	# Firing recoil shove in zero-ground flight: torso kicks back, legs swing forward
 	velocity -= dir * 0.75

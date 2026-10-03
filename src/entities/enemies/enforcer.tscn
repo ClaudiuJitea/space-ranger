@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://src/entities/enemies/enforcer.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://assets/models/enemy_enforcer.glb" id="2_model"]
+[ext_resource type="PackedScene" path="res://assets/models/arsenal_refit/enforcer.glb" id="2_model"]
 [ext_resource type="Script" path="res://src/entities/enemies/enemy_visual_animator.gd" id="3_anim"]
-[ext_resource type="PackedScene" path="res://assets/models/nightguard_detail/nightguard_rifle.glb" id="4_weapon"]
+[ext_resource type="PackedScene" path="res://assets/models/arsenal_refit/enemy_rifle.glb" id="4_weapon"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape_enforcer"]
 radius = 0.42
@@ -42,7 +42,7 @@ rotation_degrees = Vector3(0, -90, 0)
 
 [node name="OpticLight" type="OmniLight3D" parent="Visual"]
 position = Vector3(0.08, 1.95, 0.18)
-light_color = Color(0.7, 0.8, 0.82, 1)
+light_color = Color(1, 0.18, 0.06, 1)
 light_energy = 0.05
 omni_range = 1.1
 shadow_enabled = false

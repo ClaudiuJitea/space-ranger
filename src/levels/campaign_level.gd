@@ -9,10 +9,10 @@ const TERMINAL := preload("res://src/environment/prop_terminal.tscn")
 const HAZARD := preload("res://src/environment/hazard_laser.tscn")
 const PILLAR := preload("res://assets/models/platform_pillar.glb")
 const BOSS := preload("res://src/entities/enemies/boss.tscn")
-const FOES := [preload("res://src/entities/enemies/enforcer.tscn"), preload("res://src/entities/enemies/crawler.tscn"), preload("res://src/entities/enemies/turret.tscn"), preload("res://src/entities/enemies/drone.tscn"), preload("res://src/entities/enemies/gunship.tscn")]
-const NAMES := ["APEX PROTOCOL", "NIGHTGLASS REACTOR", "EMBERFALL CITADEL"]
-const BOSS_NAMES := ["APEX IRON VANGUARD", "RIFT ALPHA MATRIARCH", "EMBERFALL SERAPH"]
-const COLORS := [Color(0.15, 0.8, 1), Color(0.65, 0.35, 1), Color(1, 0.43, 0.1)]
+const FOES := [preload("res://src/entities/enemies/enforcer.tscn"), preload("res://src/entities/enemies/crawler.tscn"), preload("res://src/entities/enemies/turret.tscn"), preload("res://src/entities/enemies/drone.tscn"), preload("res://src/entities/enemies/gunship.tscn"), preload("res://src/entities/enemies/armed_hound.tscn"), preload("res://src/entities/enemies/interceptor.tscn")]
+const NAMES := ["APEX PROTOCOL", "NIGHTGLASS REACTOR", "EMBERFALL CITADEL", "FROSTWORKS SHIPYARD", "ECLIPSE SANCTUARY"]
+const BOSS_NAMES := ["APEX IRON VANGUARD", "RIFT ALPHA MATRIARCH", "EMBERFALL SERAPH", "CRYO LEVIATHAN", "ECLIPSE SOVEREIGN"]
+const COLORS := [Color(0.15, 0.8, 1), Color(0.65, 0.35, 1), Color(1, 0.43, 0.1), Color(0.12, 1, 0.68), Color(0.72, 0.3, 1)]
 @onready var player: CharacterBody3D = $Player
 @onready var hud: Control = $HUD
 @onready var platforms: Node3D = $Platforms
@@ -72,7 +72,7 @@ func _footing(x: float) -> Vector3:
 	return Vector3(nearest, _floor_at(nearest), 0)
 
 func _route(start: int, finish: int, style: int) -> void:
-	var profiles := [[0, 0, 1.4, 2.8, 2.8, 1.4, 0, 0], [0, 1.5, 3, 4.5, 6, 4.5, 3, 1.5], [0, 1.5, 3, 3, 1.5, 0, -1, -1]]
+	var profiles := [[0, 0, 1.4, 2.8, 2.8, 1.4, 0, 0], [0, 1.5, 3, 4.5, 6, 4.5, 3, 1.5], [0, 1.5, 3, 3, 1.5, 0, -1, -1], [0, 1, 2.5, 4, 4, 2.5, 1, 0], [0, 1.5, 3, 4.5, 4.5, 3, 1.5, 0]]
 	var index := 0
 	for x in range(start, finish + 1, 4):
 		if index % 16 != 11:
@@ -91,7 +91,7 @@ func setup_mission(index: int, entry: float, length: float, relays: Array[float]
 	var spawn_position := GameManager.prepare_mission(scene_file_path, 0 if index == 1 else (1 if index == 2 else 3))
 	player.position = spawn_position
 	player.last_safe_position = spawn_position
-	var target_boss_hp: float = 1600.0 if index == 1 else (2400.0 if index == 2 else 2800.0)
+	var target_boss_hp: float = [1600.0, 2400.0, 2800.0, 3200.0, 3600.0][index - 1]
 	boss = enemies.get_node_or_null("Boss") as CharacterBody3D
 	if not boss:
 		boss = _spawn(BOSS, enemies, Vector3(entry + 14, 2.8 if index < 3 else 3.2, 0), {"boss_profile": index - 1, "max_health": target_boss_hp}) as CharacterBody3D
@@ -106,6 +106,7 @@ func setup_mission(index: int, entry: float, length: float, relays: Array[float]
 	camera.set("boss_focus_x", arena_entry + 15)
 	_configure_hud()
 	_build_mission_features()
+	_build_sector_landmarks()
 	for foe in enemies.get_children():
 		if foe != boss:
 			_regular_foes.append(foe)
@@ -129,15 +130,15 @@ func _configure_hud() -> void:
 	hud.mission_name = NAMES[mission_index - 1]
 	hud.boss_display_name = "TARGET: %s" % BOSS_NAMES[mission_index - 1]
 	hud.boss_name_label.text = hud.boss_display_name
-	hud.next_level_path = "res://src/levels/level_%02d.tscn" % (mission_index + 1) if mission_index < 3 else ""
-	hud.next_mission_name = NAMES[mission_index] if mission_index < 3 else ""
-	hud.final_mission = mission_index == 3
+	hud.next_level_path = "res://src/levels/level_%02d.tscn" % (mission_index + 1) if mission_index < NAMES.size() else ""
+	hud.next_mission_name = NAMES[mission_index] if mission_index < NAMES.size() else ""
+	hud.final_mission = mission_index == NAMES.size()
 	hud.get_node("VictoryPanel/VBox/Eyebrow").text = "MISSION // %s" % hud.mission_name
 	hud.get_node("GameOverPanel/VBox/Eyebrow").text = "MISSION // %s" % hud.mission_name
 	hud.victory_detail = "%s NEUTRALIZED // SECTOR SECURED" % BOSS_NAMES[mission_index - 1]
 	hud.get_node("VictoryPanel/VBox/Subtitle").text = hud.victory_detail
-	hud.get_node("VictoryPanel/VBox/Title").text = "CAMPAIGN COMPLETE" if mission_index == 3 else "SECTOR SECURED"
-	hud.get_node("VictoryPanel/VBox/Actions/RestartVictoryBtn").text = "NEXT // %s" % ("NIGHTGLASS" if mission_index == 1 else "EMBERFALL") if mission_index < 3 else "REPLAY CAMPAIGN"
+	hud.get_node("VictoryPanel/VBox/Title").text = "CAMPAIGN COMPLETE" if mission_index == NAMES.size() else "SECTOR SECURED"
+	hud.get_node("VictoryPanel/VBox/Actions/RestartVictoryBtn").text = "NEXT // %s" % NAMES[mission_index] if mission_index < NAMES.size() else "REPLAY CAMPAIGN"
 	hud.get_node("TopCenter").offset_top = 68
 	hud.get_node("TopCenter").offset_bottom = 118
 	_progress = Label.new()
@@ -188,7 +189,7 @@ func populate_encounters(start: int, finish: int) -> void:
 			continue
 		var kind := (number + mission_index - 1) % FOES.size()
 		var altitude := 0.15
-		if kind == 3: altitude = 3.3
+		if kind == 3 or kind == 6: altitude = 3.3
 		if kind == 4: altitude = 5.5
 		_spawn(FOES[kind], enemies, Vector3(x, _floor_at(x) + altitude, 0))
 		if kind == 2 or number % 3 == 1:
@@ -201,7 +202,7 @@ func populate_encounters(start: int, finish: int) -> void:
 			_spawn(HAZARD, hazards, Vector3(x + 5, _floor_at(x + 5), 0), {"is_pulsing": true, "pulse_on_time": 1.1, "pulse_off_time": 1.7})
 		if number % 6 == 3 and kind != 4:
 			var wingman := (kind + 2) % FOES.size()
-			var wing_alt := 3.3 if wingman == 3 else (5.5 if wingman == 4 else 0.15)
+			var wing_alt := 3.3 if wingman == 3 or wingman == 6 else (5.5 if wingman == 4 else 0.15)
 			_spawn(FOES[wingman], enemies, Vector3(x + 3.5, _floor_at(x + 3) + wing_alt, 0))
 		number += 1
 
@@ -354,7 +355,7 @@ func _complete_mission() -> void:
 	completed = true
 	player.set_physics_process(false)
 	player.velocity = Vector3.ZERO
-	hud.objective_label.text = "CAMPAIGN COMPLETE // ALL SECTORS SECURED" if mission_index == 3 else "MISSION COMPLETE // SECTOR SECURED"
+	hud.objective_label.text = "CAMPAIGN COMPLETE // ALL SECTORS SECURED" if mission_index == NAMES.size() else "MISSION COMPLETE // SECTOR SECURED"
 
 func restart_mission() -> void:
 	GameManager.retry_pending = true
@@ -474,3 +475,40 @@ func _capture_player() -> void:
 
 	get_tree().quit()
 
+
+func _build_sector_landmarks() -> void:
+	var dressing := get_node_or_null("CinematicSetDressing")
+	if dressing:
+		dressing.world_end_x = int(route_length + 20)
+		dressing.alert_start_x = arena_entry
+	# Blender props occupy the background; the combat plane stays readable.
+	var models := [preload("res://assets/models/eclipse_expansion/reactor_arch.glb"), preload("res://assets/models/eclipse_expansion/cryo_tower.glb"), preload("res://assets/models/eclipse_expansion/void_obelisk.glb")]
+	var prop_kind: int = [0, 1, 0, 1, 2][mission_index - 1]
+	for x in range(24, int(route_length), 32):
+		var landmark := _spawn(models[prop_kind], background_decor, Vector3(x, _floor_at(x), -5.5))
+		landmark.name = "SectorLandmark_%d" % x
+		if prop_kind == 2:
+			var tween := landmark.create_tween().set_loops()
+			tween.tween_property(landmark, "position:y", landmark.position.y + 0.35, 2.5).set_trans(Tween.TRANS_SINE)
+			tween.tween_property(landmark, "position:y", landmark.position.y, 2.5).set_trans(Tween.TRANS_SINE)
+		var sign := Label3D.new()
+		sign.text = "%s // %03d" % [NAMES[mission_index - 1].split(" ")[0], x]
+		sign.font = preload("res://assets/fonts/ShareTechMono-Regular.ttf")
+		sign.position = Vector3(x, _floor_at(x) + 8.5, -5.8)
+		sign.font_size = 32
+		sign.pixel_size = 0.012
+		sign.modulate = COLORS[mission_index - 1]
+		background_decor.add_child(sign)
+	# Reward optional high paths with visible supply caches and weapons.
+	for x in range(40, int(arena_entry) - 20, 80):
+		var lift := AnimatableBody3D.new()
+		lift.set_script(preload("res://src/environment/moving_platform.gd"))
+		lift.position = Vector3(x, _floor_at(x), 0)
+		lift.set("travel", Vector3(0, 8.0, 0))
+		lift.set("period", 6.0)
+		platforms.add_child(lift)
+		var shelf := Vector3(x + 4, _floor_at(x) + 8, 0)
+		_platform("SalvageDeck_%d" % x, shelf, false)
+		_spawn(preload("res://src/environment/secret_cache.tscn"), props, shelf + Vector3(0, 0.1, 0))
+	for x in [arena_entry + 6, route_length - 6]:
+		_spawn(PICKUP, pickups, Vector3(x, 1.3, 0), {"pickup_type": 0 if x < arena_entry + 10 else 1})

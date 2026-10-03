@@ -11,13 +11,13 @@ func frames(count := 5) -> void:
 func _ready() -> void:
 	run.call_deferred()
 func run() -> void:
-	for index in range(1, 4):
+	for index in range(1, 6):
 		GameManager.reset_game()
 		var path := "res://src/levels/level_%02d.tscn" % index
 		var level: Node3D = load(path).instantiate()
 		add_child(level)
 		await frames()
-		check(level.route_length >= [240, 288, 320][index - 1], "Mission must have expanded route")
+		check(level.route_length >= [288, 320, 360, 368, 400][index - 1], "Mission must have expanded route")
 		check(level.boss.boss_profile == index - 1, "Mission must have unique boss")
 		check(level.boss._muzzles.size() == 2, "Blender boss must expose both weapon sockets")
 		check(not level.gate_open and not level.boss.active, "Arena must begin sealed and boss dormant")
@@ -74,8 +74,8 @@ func run() -> void:
 		level.boss.take_damage(10000)
 		await frames(120)
 		check(level.completed and level.hud.victory_panel.visible, "Boss defeat must complete mission")
-		check(level.hud.final_mission == (index == 3), "Final mission must offer campaign replay")
-		if index < 3:
+		check(level.hud.final_mission == (index == 5), "Final mission must offer campaign replay")
+		if index < 5:
 			check(ResourceLoader.exists(level.hud.next_level_path), "Next mission must exist")
 		print("MISSION ", index, " SYSTEM CHECKS COMPLETE")
 		level.queue_free()

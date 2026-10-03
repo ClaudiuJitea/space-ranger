@@ -291,87 +291,69 @@ func _on_hull_damaged(_amount: float) -> void:
 # ------------------------------------------------------------------ toasts
 
 var _toast_box: VBoxContainer = null
+var _toast_label: Label
+var _toast_tween: Tween
+var _toast_key := ""
+var _toast_count := 0
 
 func _build_toasts() -> void:
+	# One compact readout in the spare bottom-right corner, outside combat.
 	_toast_box = VBoxContainer.new()
 	_toast_box.name = "ToastStack"
 	_toast_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_toast_box.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	_toast_box.anchor_left = 0.5
-	_toast_box.anchor_right = 0.5
-	_toast_box.offset_left = -205.0
-	_toast_box.offset_right = 205.0
-	_toast_box.offset_top = 128.0
-	_toast_box.offset_bottom = 340.0
-	_toast_box.alignment = BoxContainer.ALIGNMENT_BEGIN
-	_toast_box.add_theme_constant_override("separation", 8)
+	_toast_box.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	_toast_box.offset_left = -286.0
+	_toast_box.offset_right = -24.0
+	_toast_box.offset_top = -66.0
+	_toast_box.offset_bottom = -34.0
 	add_child(_toast_box)
+	var panel := PanelContainer.new()
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", _message_padding(10, 6))
+	_add_message_chrome(panel, Color(0.2, 0.8, 1.0))
+	_toast_label = _message_label("", 12, Color.WHITE)
+	_toast_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	panel.add_child(_toast_label)
+	_toast_box.add_child(panel)
+	_toast_box.hide()
 
 func _on_notify_requested(text: String, color: Color) -> void:
 	if _toast_box == null:
 		return
-	# Objectives live in the persistent top command rail. Routing objective
-	# notifications there prevents a second temporary bar from covering it.
 	if text.begins_with("OBJECTIVE:"):
 		objective_label.text = "OBJECTIVE  //  %s" % text.trim_prefix("OBJECTIVE:").strip_edges()
-		var objective_tw := objective_label.create_tween()
-		objective_label.modulate = Color(0.4, 0.9, 1.0)
-		objective_tw.tween_property(objective_label, "modulate", Color.WHITE, 0.5)
 		return
-	SoundManager.play("notify", 1.0 + randf_range(-0.05, 0.05), -6.0)
-	var panel := PanelContainer.new()
-	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_theme_stylebox_override("panel", _message_padding(16, 12))
-	var chrome := _add_message_chrome(panel, color)
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 14)
-	panel.add_child(row)
-	var copy := VBoxContainer.new()
-	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	copy.add_theme_constant_override("separation", 2)
-	var heading := "SUIT TELEMETRY"
+	# Consecutive pickups update the same readout rather than adding panels.
+	_toast_count = _toast_count + 1 if text == _toast_key and _toast_box.visible else 1
+	_toast_key = text
 	var detail := text
-	var hint := ""
-	var weapon_index := -1
-	if text.begins_with("WEAPON ACQUIRED ["):
+	var duration := 1.4
+	if text.begins_with("HULL PATCHED"):
+		detail = "+%d HULL" % (15 * _toast_count)
+	elif text.begins_with("SHIELD RECHARGE"):
+		detail = "+%d SHIELD" % (40 * _toast_count)
+	elif text.begins_with("AMMO RECLAIMED"):
+		detail = "AMMO  " + text.get_slice("—", 1).strip_edges()
+	elif text.begins_with("WEAPON ACQUIRED ["):
 		var end := text.find("]")
 		var key := text.substr(17, end - 17)
-		weapon_index = int(key) - 1
-		heading = "ARSENAL // WEAPON ACQUIRED"
-		detail = text.substr(end + 1).strip_edges()
-		hint = "[%s] EQUIP" % key
-	elif text.begins_with("AMMO RECLAIMED"):
-		heading = "ARSENAL // AMMO RECLAIMED"
-		detail = text.get_slice("—", 1).strip_edges()
-	elif text.begins_with("HULL PATCHED"):
-		heading = "REPAIR // HULL RESTORED"
-		detail = "+15 HULL INTEGRITY"
-	elif text.begins_with("SHIELD RECHARGE"):
-		heading = "DEFENSE // SHIELD RECHARGED"
-		detail = "+40 SHIELD CAPACITY"
-	if weapon_index >= 0 and weapon_index < SLOT_NAMES.size():
-		var icon := WeaponSilhouette.new()
-		icon.weapon_index = weapon_index
-		icon.accent = color
-		icon.set_deferred("custom_minimum_size", Vector2(96, 40))
-		icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		row.add_child(icon)
-	row.add_child(copy)
-	copy.add_child(_message_label(heading, 10, color))
-	var body := _message_label(detail, 15, Color(0.9, 0.95, 1.0))
-	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	copy.add_child(body)
-	if not hint.is_empty():
-		copy.add_child(_message_label(hint, 10, Color(0.55, 0.68, 0.76)))
-	_toast_box.add_child(panel)
-	panel.modulate.a = 0.0
-	while _toast_box.get_child_count() > 3:
-		_toast_box.get_child(0).free()
-	var tw := panel.create_tween()
-	tw.tween_property(panel, "modulate:a", 1.0, 0.16)
-	tw.tween_property(chrome, "remaining", 0.0, 3.0)
-	tw.tween_property(panel, "modulate:a", 0.0, 0.3)
-	tw.tween_callback(panel.queue_free)
+		detail = "[%s] %s ACQUIRED" % [key, text.substr(end + 1).strip_edges()]
+		duration = 2.2
+	elif _toast_count > 1:
+		detail += " ×%d" % _toast_count
+	_toast_label.text = detail
+	_toast_label.tooltip_text = text
+	_toast_label.modulate = color.lightened(0.3)
+	if _toast_tween and _toast_tween.is_valid():
+		_toast_tween.kill()
+	_toast_box.show()
+	_toast_box.modulate.a = 1.0
+	if _toast_count == 1:
+		SoundManager.play("notify", 1.0, -10.0)
+	_toast_tween = _toast_box.create_tween()
+	_toast_tween.tween_interval(duration)
+	_toast_tween.tween_property(_toast_box, "modulate:a", 0.0, 0.2)
+	_toast_tween.tween_callback(_toast_box.hide)
 
 func _message_label(text: String, font_size: int, color: Color) -> Label:
 	var label := Label.new()

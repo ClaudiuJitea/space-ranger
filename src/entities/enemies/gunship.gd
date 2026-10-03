@@ -66,9 +66,9 @@ func _fire_cannon(dir: Vector3) -> void:
 	var p = proj_scene.instantiate()
 	get_parent().add_child(p)
 	p.global_position = spawn_pos
-	p.init_projectile(dir, 20.0, 20.0, Color(0.78, 0.84, 0.77), true, false)
-	FXManager.spawn_muzzle_flash(spawn_pos, dir, Color(0.78, 0.84, 0.77))
-	SoundManager.play("enemy_laser", 0.9, -1.0)
+	p.init_projectile(dir, 20.0, 20.0, Color(0.68, 0.2, 1), true, false)
+	FXManager.spawn_muzzle_flash(spawn_pos, dir, Color(0.68, 0.2, 1))
+	SoundManager.play("gunship_fire", 0.9, -1.0)
 	FXManager.shake(0.12, 0.1)
 
 func take_damage(amount: float) -> void:

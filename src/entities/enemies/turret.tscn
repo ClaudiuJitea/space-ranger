@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://e1t2u3r4r5e6"]
 
 [ext_resource type="Script" path="res://src/entities/enemies/turret.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://assets/models/concept_enemies_v2/turret.glb" id="2_mesh"]
+[ext_resource type="PackedScene" path="res://assets/models/arsenal_refit/turret.glb" id="2_mesh"]
 [ext_resource type="Script" path="res://src/entities/enemies/reference_enemy_visuals.gd" id="3_anim"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_1"]

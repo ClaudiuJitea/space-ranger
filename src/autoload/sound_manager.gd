@@ -1,13 +1,13 @@
 extends Node
 
-# Procedural Sound Synthesizer for Space Ranger
-# Generates dynamic sci-fi audio effects using AudioStreamWAV buffers, plus a
-# fully procedural three-layer ambient music system (explore pad / combat
-# pulse / boss tension) that crossfades with the game state.
+## Downloaded MP3 effects and music are the primary soundtrack. Synthesis is
+## only a recovery path for a missing recording.
 
 var audio_players: Array[AudioStreamPlayer] = []
 const POOL_SIZE := 16
 var _sounds: Dictionary = {}
+var _recorded_sfx: Array[String] = []
+var _recorded_music: Array[StringName] = []
 var _last_played: Dictionary = {} # sound name -> msec timestamp, gates pellet spam
 
 # --- Music engine ---------------------------------------------------------
@@ -77,6 +77,18 @@ const SFX_KEYS: Array[String] = [
 	"powerup", "plasma_burst",
 ]
 
+# Combat roles reuse the downloaded recordings, with distinct cues per weapon.
+# Alias streams share the same MP3 data; no generated audio or extra downloads.
+const COMBAT_CUES := {
+	"px9_fire": "laser_pulse", "titan_fire": "laser_spread",
+	"lr77_fire": "laser_beam", "havoc_fire": "rocket_launch",
+	"enforcer_fire": "enemy_laser", "scout_fire": "laser_pulse",
+	"turret_fire": "laser_spread", "gunship_fire": "enemy_laser",
+	"hound_fire": "laser_beam", "wasp_fire": "plasma_burst",
+	"boss_cannon": "laser_spread", "boss_cryo": "laser_beam",
+	"boss_void": "plasma_burst", "emp_discharge": "plasma_burst",
+}
+
 func _load_mp3(path: String, loop := false) -> AudioStream:
 	# Exported builds pack imported .mp3str files, not the original MP3 bytes.
 	# FileAccess on res://assets/...mp3 works in the editor (project folder)
@@ -104,10 +116,13 @@ func _generate_all_sounds() -> void:
 		var recorded := _load_mp3("res://assets/audio/sfx/%s.mp3" % key)
 		if recorded:
 			_sounds[key] = recorded
+			_recorded_sfx.append(key)
 			loaded += 1
 			continue
 		_sounds[key] = _synth_fallback(key)
-	print("SoundManager: %d/%d ElevenLabs SFX loaded" % [loaded, SFX_KEYS.size()])
+	for cue in COMBAT_CUES:
+		_sounds[cue] = _sounds[COMBAT_CUES[cue]]
+	print("SoundManager: %d/%d downloaded SFX loaded" % [loaded, SFX_KEYS.size()])
 
 func _synth_fallback(key: String) -> AudioStreamWAV:
 	match key:
@@ -359,7 +374,7 @@ func _create_rocket_sound(duration: float, volume: float) -> AudioStreamWAV:
 	return _create_wav(bytes, rate)
 
 # ---------------------------------------------------------------- music ----
-## Fully procedural, seamlessly looping ambient music. Every oscillator
+## Downloaded looping music crossfades by mood. Fallback synthesis keeps every oscillator
 ## frequency is quantized to an integer multiple of 1/loop_length, so each
 ## layer's waveform is perfectly periodic and loops without a click.
 
@@ -406,6 +421,7 @@ func _generate_music_layers() -> void:
 		var stream := _load_mp3("res://assets/audio/music/%s.mp3" % files[layer], true)
 		if stream:
 			recorded[layer] = stream
+			_recorded_music.append(layer)
 		else:
 			need_synth = true
 	var synth := {}
@@ -426,7 +442,8 @@ func _generate_music_layers() -> void:
 		_music[layer] = p
 		_music_current[layer] = 0.0
 	_music_target = {"pad": 0.0, "pulse": 0.0, "tension": 0.0}
-	_set_targets("explore")
+	_set_targets(music_mood)
+	print("SoundManager: %d/3 downloaded music tracks loaded" % _recorded_music.size())
 
 ## Slow evolving pad: Am - F - C - G, 4 s per chord, additive sines with
 ## chorus detune and a slow shimmer LFO.

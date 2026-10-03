@@ -75,8 +75,8 @@ script = ExtResource("5_space")
 
 [node name="CinematicSetDressing" type="Node3D" parent="."]
 script = ExtResource("7_cinema")
-world_end_x = 348
-alert_start_x = 292.0
+world_end_x = 380
+alert_start_x = 324.0
 accent_color = Color(1, 0.36, 0.06, 1)
 
 [node name="Camera3D" type="Camera3D" parent="."]

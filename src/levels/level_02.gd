@@ -11,12 +11,12 @@ func _ready() -> void:
 		Vector3(106, 3, 0), Vector3(112, 3, 0)]
 	for i in route.size():
 		_platform("ReactorAscent_%02d" % i, route[i])
-	_route(116, 256, 1)
-	for x in range(264, 289, 4):
+	_route(116, 288, 1)
+	for x in range(296, 321, 4):
 		_platform("WardenArena_%d" % x, Vector3(x, 0, 0))
-	_platform("WardenPerchL", Vector3(264, 3.5, 0))
-	_platform("WardenPerchR", Vector3(288, 3.5, 0))
-	populate_encounters(12, 252)
+	_platform("WardenPerchL", Vector3(296, 3.5, 0))
+	_platform("WardenPerchR", Vector3(320, 3.5, 0))
+	populate_encounters(12, 284)
 	_spawn(PICKUP, pickups, Vector3(22, 6.2, 0), {"pickup_type": 2, "weapon_to_unlock": 2})
 	_spawn(PICKUP, pickups, Vector3(148, _floor_at(148) + 1.2, 0), {"pickup_type": 2, "weapon_to_unlock": 3})
-	setup_mission(2, 260, 288, [78.0, 196.0])
+	setup_mission(2, 292, 320, [78.0, 196.0, 268.0])

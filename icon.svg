@@ -1,76 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="sky" x1="90" y1="30" x2="430" y2="500" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#152033"/>
-      <stop offset="1" stop-color="#070b12"/>
-    </linearGradient>
-    <linearGradient id="gas" x1="180" y1="140" x2="380" y2="400" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#f0d3a4"/>
-      <stop offset="0.55" stop-color="#c9a06a"/>
-      <stop offset="1" stop-color="#7a5430"/>
-    </linearGradient>
-    <clipPath id="tile">
-      <rect x="22" y="22" width="468" height="468" rx="78"/>
-    </clipPath>
-
-    <!-- Exact HUD polygons from weapon_silhouette.gd -->
-    <g id="px9">
-      <polygon points="10,31 25,24 52,24 65,29 59,38 36,38 23,46 10,44"/>
-      <polygon points="55,21 137,21 151,27 151,42 132,47 58,43 48,34"/>
-      <polygon points="142,26 218,26 231,31 218,38 143,39"/>
-      <polygon points="78,42 101,42 96,64 79,64"/>
-      <polygon points="88,13 127,13 136,19 83,19"/>
-      <g fill="#071018">
-        <rect x="63" y="27" width="60" height="4"/>
-        <circle cx="133" cy="34" r="4"/>
-        <path d="M161,29 l-5,7 M174,29 l-5,7 M187,29 l-5,7 M200,29 l-5,7" fill="none" stroke="#071018" stroke-width="3" stroke-linecap="butt"/>
-      </g>
-    </g>
-    <g id="titan8">
-      <polygon points="8,29 34,19 64,20 78,27 68,41 41,41 24,49 8,45"/>
-      <polygon points="61,18 145,18 159,25 153,43 70,47 55,35"/>
-      <rect x="145" y="22" width="78" height="7"/>
-      <rect x="145" y="35" width="78" height="7"/>
-      <rect x="218" y="19" width="14" height="12"/>
-      <rect x="218" y="33" width="14" height="12"/>
-      <polygon points="143,44 190,44 183,54 149,54"/>
-      <polygon points="81,43 105,43 99,65 80,65"/>
-      <circle cx="126" cy="51" r="9"/>
-      <g fill="#071018">
-        <circle cx="126" cy="51" r="4"/>
-        <rect x="72" y="24" width="66" height="5"/>
-        <path d="M153,45 l-4,8 M163,45 l-4,8 M173,45 l-4,8 M183,45 l-4,8" fill="none" stroke="#071018" stroke-width="2"/>
-      </g>
-    </g>
+    <linearGradient id="tile" x2=".8" y2="1"><stop stop-color="#192c40"/><stop offset="1" stop-color="#050e19"/></linearGradient>
+    <linearGradient id="armor" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4f1df"/><stop offset=".5" stop-color="#b6c9ce"/><stop offset="1" stop-color="#526e80"/></linearGradient>
+    <linearGradient id="visor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#b5ffff"/><stop offset=".35" stop-color="#3ee5fb"/><stop offset="1" stop-color="#087eaf"/></linearGradient>
+    <linearGradient id="orbit"><stop stop-color="#f4af52"/><stop offset="1" stop-color="#ffda92"/></linearGradient>
   </defs>
-
-  <rect width="512" height="512" rx="96" fill="#0b111a"/>
-  <rect x="22" y="22" width="468" height="468" rx="78" fill="url(#sky)"/>
-
-  <g clip-path="url(#tile)">
-    <circle cx="86" cy="78" r="2" fill="#e7fbff" opacity=".65"/>
-    <circle cx="430" cy="70" r="1.6" fill="#fff6d8" opacity=".5"/>
-    <circle cx="64" cy="430" r="1.5" fill="#c9ecff" opacity=".4"/>
-    <circle cx="470" cy="400" r="1.4" fill="#fff" opacity=".3"/>
-
-    <!-- planet sits in the gap behind the cross -->
-    <g transform="rotate(-16 256 250)">
-      <ellipse cx="256" cy="250" rx="168" ry="32" fill="none" stroke="#8adfff" stroke-width="9" opacity=".7"/>
-      <ellipse cx="256" cy="250" rx="168" ry="32" fill="none" stroke="#f2d7a6" stroke-width="3" opacity=".5"/>
-    </g>
-    <circle cx="256" cy="250" r="92" fill="url(#gas)"/>
-    <ellipse cx="228" cy="226" rx="22" ry="12" fill="#fff3d8" opacity=".22"/>
-
-    <!-- Crossed rifles: barrels UP, stocks DOWN, pivot on the grip -->
-    <g transform="translate(256 318)">
-      <g fill="#3ee0ff" transform="rotate(-52) translate(-90 -50) scale(1.58)">
-        <use href="#titan8"/>
-      </g>
-      <g fill="#3ee0ff" transform="scale(-1 1) rotate(-52) translate(-90 -50) scale(1.58)">
-        <use href="#px9"/>
-      </g>
-    </g>
+  <rect x="8" y="8" width="496" height="496" rx="104" fill="url(#tile)"/>
+  <rect x="17" y="17" width="478" height="478" rx="96" fill="none" stroke="#294758" stroke-width="3"/>
+  <!-- Ringed gas giant behind the helmet. -->
+  <g transform="rotate(-24 380 121)">
+    <ellipse cx="380" cy="121" rx="89" ry="23" fill="none" stroke="#839dad" stroke-width="8"/>
+    <circle cx="380" cy="121" r="57" fill="#d49a5c"/>
+    <path d="M329 98q51 18 102 0M325 121q55 18 110 0M335 149q45 12 90 0" fill="none" stroke="#efc78f" stroke-width="11"/>
+    <path d="M387 65a57 57 0 0 1 5 112c26-20 32-75-5-112" fill="#a1653d"/>
+    <path d="M291 121a89 23 0 0 0 178 0" fill="none" stroke="#e6d4b2" stroke-width="8"/>
   </g>
-
-  <rect x="22" y="22" width="468" height="468" rx="78" fill="none" stroke="#3ee0ff" stroke-width="8"/>
+  <path d="M98 330v15m-7-8h14M411 364v15m-7-8h14" stroke="#658a9d" stroke-width="3"/>
+  <circle cx="252" cy="67" r="3" fill="#d5edf4"/>
+  <circle cx="443" cy="276" r="3" fill="#d5edf4"/>
+  <!-- Sculpted helmet plates, broad cyan visor, and dark breathing grille. -->
+  <path d="M126 209l28-61 62-35h80l62 35 28 61-9 114-43 64-78 36-78-36-43-64z" fill="#050c15" stroke="#050c15" stroke-width="16" stroke-linejoin="round"/>
+  <path d="M141 210l28-52 51-30h72l51 30 28 52-59-19-56 14-56-14z" fill="url(#armor)"/>
+  <path d="M235 130h42l12 55-33 12-33-12z" fill="#e6ede5"/>
+  <path d="M155 216l42-11 59 18 59-18 42 11-13 62-50 26h-76l-50-26z" fill="url(#visor)"/>
+  <path d="M175 220l27-4 54 16 54-16 27 4" fill="none" stroke="#d2ffff" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M140 238l19 46 41 25-21 57-28-46zM372 238l-19 46-41 25 21 57 28-46z" fill="url(#armor)"/>
+  <path d="M212 320l44-13 44 13 19 51-63 33-63-33z" fill="url(#armor)"/>
+  <path d="M231 327h50l11 36-36 18-36-18z" fill="#172d3b"/>
+  <path d="M236 340h40m-36 13h32" stroke="#678c9a" stroke-width="5"/>
+  <path d="M145 287l15 9m207-9-15 9" stroke="#f6b24f" stroke-width="10"/>
+  <path d="M171 416h170" stroke="#35cfe8" stroke-width="6" stroke-linecap="round"/>
 </svg>

@@ -83,9 +83,9 @@ func _fire(direction: Vector3) -> void:
 	var shot_origin: Vector3 = animator.get_muzzle_position()
 	projectile.global_position = shot_origin
 	projectile.global_position.z = 0.0
-	projectile.init_projectile(direction, 20.0, 14.0, Color(0.78, 0.83, 0.76), true, false)
-	FXManager.spawn_muzzle_flash(shot_origin, direction, Color(0.78, 0.83, 0.76))
-	SoundManager.play("enemy_laser", randf_range(0.86, 0.96), -5.0)
+	projectile.init_projectile(direction, 20.0, 14.0, Color(1, 0.22, 0.07), true, false)
+	FXManager.spawn_muzzle_flash(shot_origin, direction, Color(1, 0.22, 0.07))
+	SoundManager.play("enforcer_fire", randf_range(0.86, 0.96), -5.0)
 	if animator:
 		animator.play_clip("attack")
 

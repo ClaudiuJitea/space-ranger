@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dg5n6h7i8p9k"]
 
 [ext_resource type="Script" path="res://src/entities/enemies/gunship.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://assets/models/concept_enemies_v2/gunship.glb" id="2_mesh"]
+[ext_resource type="PackedScene" path="res://assets/models/arsenal_refit/gunship.glb" id="2_mesh"]
 [ext_resource type="Script" path="res://src/entities/enemies/reference_enemy_visuals.gd" id="3_anim"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
@@ -33,6 +33,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.72, -0.22, 0.29)
 
 [node name="EngineLight" type="OmniLight3D" parent="Visual"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0, 0)
-light_color = Color(0.42, 0.04, 1, 1)
+light_color = Color(0.68, 0.18, 1, 1)
 light_energy = 0.7
 omni_range = 3.5

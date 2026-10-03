@@ -12,10 +12,10 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 
-async def run(action: str, tool: str | None, arguments_file: str | None, output_dir: str | None) -> None:
+async def run(action: str, tool: str | None, arguments_file: str | None, output_dir: str | None, port: int = 9876) -> None:
     params = StdioServerParameters(
         command="/home/clau/miniconda3/bin/blender-mcp",
-        env={**os.environ, "BLENDER_HOST": "127.0.0.1", "BLENDER_PORT": "9876"},
+        env={**os.environ, "BLENDER_HOST": "127.0.0.1", "BLENDER_PORT": str(port)},
     )
     async with stdio_client(params) as (read_stream, write_stream):
         async with ClientSession(read_stream, write_stream) as session:
@@ -46,10 +46,11 @@ def main() -> None:
     parser.add_argument("tool", nargs="?")
     parser.add_argument("--arguments-file")
     parser.add_argument("--output-dir")
+    parser.add_argument("--port", type=int, default=9876)
     args = parser.parse_args()
     if args.action == "call" and not args.tool:
         parser.error("call requires a tool name")
-    asyncio.run(run(args.action, args.tool, args.arguments_file, args.output_dir))
+    asyncio.run(run(args.action, args.tool, args.arguments_file, args.output_dir, args.port))
 
 
 if __name__ == "__main__":
